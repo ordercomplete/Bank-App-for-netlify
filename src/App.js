@@ -31,18 +31,18 @@ import StatusBarColorChanger2 from "./modul/StatusBarColorChanger2";
 function App() {
   return (
     <AuthProvider>
-      <StatusBarColorChanger2
+      {/* <StatusBarColorChanger2
         color="#8A6DE3"
         targetClassName="welcome-container"
       />
       <StatusBarColorChanger2
-        color="##4380C5"
+        color="#4380C5"
         targetClassName="balance-container"
       />
       <StatusBarColorChanger2
         color="#ffffff"
         targetClassName="default-container"
-      />
+      /> */}
       <StatusBarColorChanger2
         color="#F5F5F7"
         targetClassName="default-container-auth"

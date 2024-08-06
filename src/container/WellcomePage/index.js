@@ -8,7 +8,7 @@ import settingsSvg from "../../IconsSvg/settings.svg";
 export function WellcomePage() {
   return (
     <div className="welcome-container jost-font-text">
-      <StatusBarColorChanger color="" />
+      <StatusBarColorChanger color="#8A6DE3" />
       <div className="welcome-background-container">
         <div className="wellcome-icons-block">
           <Link to="/settings-admin" className="welcome-settings-icon-link">
