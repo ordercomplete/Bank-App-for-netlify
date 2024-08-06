@@ -9,11 +9,11 @@ import StatusBarColorChanger2 from "../../modul/StatusBarColorChanger2";
 export function WellcomePage() {
   return (
     <div className="welcome-container jost-font-text">
-      <StatusBarColorChanger color="#8A6DE3" />
-      {/* <StatusBarColorChanger2
+      {/* <StatusBarColorChanger color="#8A6DE3" /> */}
+      <StatusBarColorChanger2
         color="#8A6DE3"
         targetClassName="welcome-container"
-      /> */}
+      />
       <div className="welcome-background-container">
         <div className="wellcome-icons-block">
           <Link to="/settings-admin" className="welcome-settings-icon-link">
