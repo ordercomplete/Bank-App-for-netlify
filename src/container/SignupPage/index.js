@@ -103,10 +103,10 @@ export const SignupPage = () => {
 
   return (
     <div className="default-container">
-      <StatusBarColorChanger
+      {/* <StatusBarColorChanger
         color="#ffffff"
         targetClassName="default-container"
-      />
+      /> */}
       {/* title ідентичний для всіх сторінок */}
       <TitleComponent pageTitle={pageTitle} textUnderTitle={textUnderTitle} />
       <form onSubmit={handleSignup}>
