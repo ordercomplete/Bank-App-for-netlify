@@ -28,7 +28,7 @@ export const BalancePage = () => {
 
   return (
     <div className="balance-container jost-font-text">
-      <StatusBarColorChanger color="linear-gradient(90deg, rgba(100, 225, 221, 1) 0%, rgba(80, 111, 199, 1) 76%, rgba(87, 90, 200, 1) 100%);" />
+      <StatusBarColorChanger color="4380C5" />
       <div className="balance-background-container">
         <TitleComponentBalance />
         <h1 className="balance-amount">
