@@ -32,9 +32,22 @@ function App() {
   return (
     <AuthProvider>
       <StatusBarColorChanger2
+        color="#8A6DE3"
+        targetClassName="welcome-container"
+      />
+      <StatusBarColorChanger2
+        color="##4380C5"
+        targetClassName="balance-container"
+      />
+      <StatusBarColorChanger2
+        color="#ffffff"
+        targetClassName="default-container"
+      />
+      <StatusBarColorChanger2
         color="#F5F5F7"
         targetClassName="default-container-auth"
       />
+
       {/* AuthContext.Provider Створюємо контекст, в якому будемо тримати дані аутентифікації
       В контексті буде знаходитись: створений state через useReducer, 
       який буде знаходитись властивість token та об'єкт user dispatch функція, 
