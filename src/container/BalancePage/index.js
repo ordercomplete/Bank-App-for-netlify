@@ -29,11 +29,11 @@ export const BalancePage = () => {
 
   return (
     <div className="balance-container jost-font-text">
-      {/* <StatusBarColorChanger color="#4380C5" /> */}
-      <StatusBarColorChanger2
+      <StatusBarColorChanger color="#4380C5" />
+      {/* <StatusBarColorChanger2
         color="#4380C5"
         targetClassName="balance-container"
-      />
+      /> */}
       <div className="balance-background-container">
         <TitleComponentBalance />
         <h1 className="balance-amount">

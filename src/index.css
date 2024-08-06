@@ -39,7 +39,7 @@ code {
   font-family: var(--main-font);
   color: black;
   padding-top: 0;
-  /* background-color: #ffffff; */
+  background-color: #ffffff;
   position: absolute;
   top: 0;
   left: 0;
@@ -56,10 +56,10 @@ code {
   overflow-x: hidden;
 }
 
-.default-container {
+/* .default-container {
   background-color: #ffffff;
   background: #ffffff;
-}
+} */
 
 .default-container-auth {
   background-color: #F5F5F7;
