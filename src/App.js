@@ -42,11 +42,11 @@ function App() {
       <StatusBarColorChanger2
         color="#ffffff"
         targetClassName="default-container"
-      /> */}
+      />
       <StatusBarColorChanger2
         color="#F5F5F7"
         targetClassName="default-container-auth"
-      />
+      /> */}
 
       {/* AuthContext.Provider Створюємо контекст, в якому будемо тримати дані аутентифікації
       В контексті буде знаходитись: створений state через useReducer, 
