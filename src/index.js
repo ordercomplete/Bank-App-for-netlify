@@ -31,5 +31,6 @@ root.render(
       targetClassName="default-container-auth"
     />
     <App />
-  </StrictMode>
+  </StrictMode>,
+  document.getElementById("root")
 );
