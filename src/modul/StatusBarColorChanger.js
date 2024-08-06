@@ -1,30 +1,55 @@
 import React, { useEffect } from "react";
-//у випадку з Create React App, вам доведеться змінювати мета-теги динамічно за допомогою JavaScript залежно від активної сторінки.
-// Ось простий приклад, як це можна зробити у React:
-// Створіть окремий компонент для зміни кольору статусбару:
-const StatusBarColorChanger = ({ color }) => {
+
+const StatusBarColorChanger = ({ targetClassName, color }) => {
   useEffect(() => {
-    const metaTag = document.querySelector('meta[name="theme-color"]');
-    if (metaTag) {
-      metaTag.setAttribute("content", color);
-    }
-  }, [color]);
+    const updateStatusBarColor = () => {
+      const targetElements = document.querySelectorAll(`.${targetClassName}`);
+      const metaTag = document.querySelector('meta[name="theme-color"]');
+
+      if (targetElements.length > 0) {
+        if (metaTag) {
+          metaTag.setAttribute("content", color);
+        } else {
+          const newMetaTag = document.createElement("meta");
+          newMetaTag.setAttribute("name", "theme-color");
+          newMetaTag.setAttribute("content", color);
+          document.head.appendChild(newMetaTag);
+        }
+      }
+    };
+
+    // Викликаємо під час компонування компонента
+    updateStatusBarColor();
+
+    // Відстеження змін у DOM
+    const observerConfig = {
+      childList: true,
+      subtree: true,
+    };
+
+    const observer = new MutationObserver((mutationsList) => {
+      for (const mutation of mutationsList) {
+        if (mutation.type === "childList") {
+          updateStatusBarColor();
+        }
+      }
+    });
+
+    observer.observe(document.body, observerConfig);
+
+    // Прибрана зміна кольору на демонтуження компонента
+    return () => {
+      observer.disconnect();
+    };
+  }, [targetClassName, color]);
 
   return null;
 };
 
 export default StatusBarColorChanger;
 
-// Використовуйте цей компонент на кожній сторінці, де ви хочете змінити колір статусбару:
-// import StatusBarColorChanger from './StatusBarColorChanger';
-
-// const HomePage = () => {
-//   return (
-//     <div>
-//       <StatusBarColorChanger color="#5E3CE2" />
-//       <h1>Home Page</h1>
-//     </div>
-//   );
-// };
-//Потім у вашому маршрутизаторі (наприклад, react-router-dom) використовуйте ці компоненти:
-//Таким чином, коли користувач буде переходити між сторінками, колір статусбару буде динамічно змінюватися відповідно до поточної сторінки.
+//Пояснення
+// Компонент StatusBarColorChanger: Він створює та використовує MutationObserver для відстеження змін в DOM, щоб перевіряти наявність елементів з класом welcome-container. Якщо такі елементи є, змінює колір статусбара.
+// Статус бар метатег: Якщо метатег theme-color вже існує, його атрибут content змінюється на вказаний колір. Якщо метатег відсутній, він буде створений.
+// Централізоване підключення: Компонент підключено в кореневому файлі index.js або в основному компоненті, і він впливає на всі сторінки, де є елементи з класом welcome-container.
+// Таким чином, ви отримуєте бажаний результат, коли зміна кольору статусбара централізовано контролюється з одного місця і застосовується до всіх сторінок, що містять елементи з потрібним класом.
