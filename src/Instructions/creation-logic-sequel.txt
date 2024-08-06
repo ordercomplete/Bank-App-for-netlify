@@ -1,0 +1,847 @@
+Архів-26.07.24 (Опис:
+Створити для транзакції типу "Western Union" таймер до закінчення можливості підтвердження отримання в акаунті отримувача. Розмістити візуально лічильник відліку на сторінці SendPage для відправника та на сторінці ReceivePage для отримувача. Для отримувача приходить повідомлення (після створення транзакції "Western Union") на сторінці BalancePage про транзакцію з підтвердженням з посиланням на сторінку ReceivePage де знаходиться таймер відліку залишку часу. Якщо час відліку закінчився без підтвердження транзакції, то створюється транзакція скасування, яку отримує як відправник так і отримувач.
+
+Завдання:
+1.Розмістити візуально лічильник відліку на сторінці SendPage для відправника та на сторінці ReceivePage для отримувача прив'язаний до конретної транзакції. 
+2.Для отримувача повинно приходить повідомлення на сторінці BalancePage (після створення транзакції "Western Union") про транзакцію з посиланням на сторінку ReceivePage де знаходиться таймер відліку залишку часу. 
+3.Якщо час відліку закінчився без підтвердження транзакції, то створюється транзакція скасування, яку отримує як відправник, так і отримувач.
+4.Під час сворення транзакції відправлення "Western Union" транзакція не повинна створюватися до моменту її підтвердження отримувачем.
+
+Проблема:
+1.не видно самого відліку часу на сторінці отримувача
+2.немає таймеру на сторінці у відправника
+3.транзакція "Western Union" створюється відразу після її створення не дочекавшись її підтвердження.)
+
+Архів-27.07.24 (Потрібно зробити детальний опис всіх подій у файлах додатка, біля кожного рядка у коментарях описувати все, а не повторювати просто код не розділяючи файли на фрагменти. Пропиши всі можливі пояснення до кожного наступного файлу (типи даних, принципи роботи функцій, взаємодія з іншими файлами, збереження даних і т.д.), не скорочуючи код та нічого не видаляючи з коду та не змінюючи його.
+Перший файл описувати не треба, якщо це App.js. Це структура додатка, на основі якого працюють всі інші файли.)
+
+
+Ми створюємо додаток Bank App. 
+Відповідай англійською, якщо так буде витрачатись менше токенів на відповідь. 
+Всі додані зміни у коді обов'язково коментуй поруч зі змінами в коді (підтверди як зрозумів). 
+Генеруй код лише тих фрагментів, які змінюються та не переписуй все цілком (підтверди як зрозумів).
+Якщо продовжуєш, то починай з моменту закінчення попередньої відповіді (підтверди як зрозумів).
+
+Структура запиту:
+1. Запитання, Завдання чи Проблеми для вирішення.
+2. Опис зі створення файлів (надам те що потрібно).
+3. Код вже створених файлів, які треба взяти за основу або треба доопрацювати.
+
+Створити таку функціональність для поля вводу пароля:
+1.Вводимі символи відразу повинні бути прихованими.
+2.Кнопка підглядування повинна спрацьовувати не більш ніж на 5 секунд.
+
+Оптимізуй файл стилів за допомогою будь-яких доступних тобі засобів не змінюючи функціоналу.
+Не потрібно повторювати код файлу, в якому не відбувається змін, файл *.js надається для розуміння загальної картини.
+
+Створити перевірку підрахунку балансу користувача, яка б перераховувала всі здійснені транзакції користувача і співставляла їх з поточним балансом для унеможливлення впливу при помилок при внесенні змін у код під час модернізацій коду.
+
+
+Далі код вже наявних файлів:
+
+//Файл App.js
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { PrivateRoute } from "./PrivateRoute";
+import { SigninPage } from "./container/SigninPage";
+import { SignupPage } from "./container/SignupPage";
+import { AuthProvider } from "./AuthContext";
+import { SignupConfirmPage } from "./container/SignupConfirmPage";
+import { RecoveryConfirmPage } from "./container/RecoveryConfirmPage";
+import { RecoveryPage } from "./container/RecoveryPage";
+import { DeleteAccountPage } from "./container/DeleteAccountPage";
+import { UsersPage } from "./container/UsersPage";
+import AuthRoute from "./AuthRoute";
+import WellcomePage from "./container/WellcomePage";
+import SendPage from "./container/SendPage";
+import TransactionPage from "./container/TransactionPage";
+import BalancePage from "./container/BalancePage";
+import NotificationsPage from "./container/NotificationsPage";
+import SettingsPage from "./container/SettingsPage";
+import ReceivePage from "./container/ReceivePage";
+import Error from "./container/ErrorPage";
+import UserDataPage from "./container/UserDataPage";
+import SettingsPageAdmin from "./container/SettingsPageAdmin";
+
+function App() {
+ 
+  return (
+    <AuthProvider>
+      {/* AuthContext.Provider value={authContextData} Створюємо контекст, в якому будемо тримати дані аутентифікації
+      В контексті буде знаходитись: створений state через useReducer, 
+      який буде знаходитись властивість token та об'єкт user dispatch функція, 
+      яка буде мати наступні типи дій: увійти в акаунт, вийти з акаунту */}
+      <BrowserRouter>
+        <Routes>
+          <Route
+            index
+            element={
+              <AuthRoute>
+                {/* AuthRoute це компонент, який перевіряє, чи є в контексті аутентифікації токен, 
+                якщо так, то переводить на сторінку /balance */}
+                <WellcomePage />
+                {/* <WellcomePage /> На цій сторінці ми створюємо верстку та розміщуємо дві кнопки-посилання 
+                на сторінку /signup та сторінку /signin */}
+              </AuthRoute>
+            }
+          />
+
+          <Route
+            path="/settings-admin"
+            element={
+              <AuthRoute>
+                <SettingsPageAdmin />
+                {/* <SignupPage /> На цій сторінці створюємо форму, яка відправляє запит на реєстрацію користувача та переводить на сторінку /signup-comfirm. Після реєстрації потрібно зберегти дані аутентифікації в контекст */}
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <AuthRoute>
+                <SignupPage />
+                {/* <SignupPage /> На цій сторінці створюємо форму, яка відправляє запит на реєстрацію користувача 
+                та переводить на сторінку /signup-comfirm.
+                Після реєстрації потрібно зберегти дані аутентифікації в контекст */}
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/signup-confirm"
+            element={
+              <PrivateRoute allowUnconfirmed={true}>
+                {/* На сторінці /signup-confirm використовуємо PrivateRoute, адже підтвердити акаунт може користувач, який вже увійшов в акаунт 
+                Після підтвердження акаунту потрібно оновити дані аутентифікації в контексті */}
+                {<SignupConfirmPage />}
+                {/* <SignupConfirmPage /> На цій сторінці вводимо код підтвердження реєстрації акаунта та після успішного запиту переводимо на сторінку /balance 
+                Перевіряємо в контексті аутентифікації чи user.confirm. Якщо так, то переводимо на сторінку /balance */}
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/signin"
+            element={
+              <AuthRoute>
+                <SigninPage />
+                {/* Вхід в акаунт. Зберігаємо дані аутентифікації в контекст. 
+                Якщо user.confirm є false, то перенаправляємо на /signup-confirm */}
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/recovery"
+            element={
+              <AuthRoute>
+                <RecoveryPage />
+                {/* <RecoveryPage /> Сторінка відновлення акаунту. 
+                Після вводу пошти, створюється код з підтвердженням відновлення акаунту, 
+                переводимо на сторінку /recovery-confirm */}
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/recovery-confirm"
+            element={
+              <AuthRoute>
+                <RecoveryConfirmPage />
+                {/* <RecoveryConfirmPage /> Сторінка підтвердження відновлення та оновлення пароля.  Після відправки форми потрібно перевести на сторінку /balance */}
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/delete-account"
+            element={
+              <PrivateRoute>
+                <DeleteAccountPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/balance"
+            element={
+              <PrivateRoute>
+                {/* <PrivateRoute> Приватний роут, який перевіряє наявність токена в контексті аутентифікації. 
+                Будь-який запит, який відправляється в сторінках під приватним роутом 
+                повинні передавати токен (будь-яким варіантом) на сервер для перевірки токена 
+                та отримання інформації що за користувач відправляє дані та передати конкретно його дані */}
+                <BalancePage />
+                {/* <BalancePage /> Сторінка балансу */}
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <PrivateRoute>
+                <NotificationsPage />
+                {/* <NotificationsPage /> Сторінка списку нотифікацій, який створюються при діях:
+                Вхід в акаунт
+                Відновлення акаунту
+                Зміна пароля
+                Зміна пошти
+                Поповнення
+                Переказ */}
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <PrivateRoute>
+                <SettingsPage />
+                {/* <SettingsPage /> Сторінка налаштувань, на якій можна:
+                Змінити пароль
+                Змінити пошту
+                Вийти з акаунту
+                Кожна дія повинна в кінці оновлювати контекст аутентифікації */}
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/receive"
+            element={
+              <PrivateRoute>
+                <ReceivePage />
+                {/* <ReceivePage /> Сторінка поповнення балансу. 
+                Користувач вводить суму, натискає на платіжний метод і відправляється запит. 
+                Після чого створюється нова транзакція та нова нотифікація */}
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/send"
+            element={
+              <PrivateRoute>
+                <SendPage />
+                {/* <SendPage /> Користувач вводить пошту та суму. 
+                Після чого у користувача, який відправив суму, 
+                створюється транзакція на списання грошей на нотифікацію, а у користувача, який отримав гроші, 
+                створюється транзакція на отримання грошей та нотифікацію */}
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/transaction/:transactionId"
+            element={
+              <PrivateRoute>
+                <TransactionPage />
+                {/* <TransactionPage /> Сторінка з детальною інформацією про конкретну транзакцію. 
+                В сторінці є trainsactionId, який вказує на ідентифікатор транзакції, 
+                який використовується для отримання та виводи інформації про конкретну транзакцію. 
+                Перехід на цю сторінку здійснюється через натискання на карточку транзакції на сторінці /balance */}
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/users" // Новостворений маршрут для сторінки користувачів
+            element={
+              <PrivateRoute>
+                <UsersPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user-data/:userId" // Новостворений маршрут для сторінки користувачів
+            element={
+              <PrivateRoute>
+                <UserDataPage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="*" Component={Error} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+    // </SafeAreaProvider>
+  );
+}
+
+export default App;
+
+Сторінка UsersPage доступна тількі в акаунті з правами адміністратора. Вона має два посилання: на сторінку UserTransactionsPage та сторінку Файл UserNotificationsPage. 
+Сторінка UserTransactionsPage повинна показувати транзакції поточного корисувача від імені адміністратора. Наразі вона показує тільки транзакції, пов'язані з адміністратором. 
+Сторінк UserNotificationsPage повинна показувати події транзакцій та загальні події пов'язані з поточним користувачем, а вона показує події транзакцій адміністратора, а загальні події показує всіх користувачів.
+Код яких ще сторінок тобі допоможе знайти ви виправити проблему? Не починай вирішувати проблему доки я тобі не скину всі файли.
+
+// Файл AuthContext
+import React, { createContext, useReducer, useEffect } from "react";
+
+import {
+  handleAddTransaction,
+  handleConfirmTransactionStatus,
+} from "./component/transactions";
+
+export const AuthContext = createContext();
+
+const initialState = {
+  token: null,
+  user: null,
+  isLoggedIn: false,
+  users: [...(JSON.parse(localStorage.getItem("users")) || [])],
+  transactions: JSON.parse(localStorage.getItem("transactions")) || [],
+  events: [],
+  // pendingTransactions: [], //add 25.07.24
+};
+
+const loadStateFromLocalStorage = () => {
+  const defaultState = {
+    token: null,
+    user: null,
+    isLoggedIn: false,
+    users: [...(JSON.parse(localStorage.getItem("users")) || [])],
+    transactions: [],
+    events: [],
+    pendingTransactions: [],
+  };
+
+  try {
+    const storedState = JSON.parse(localStorage.getItem("authState")) || {};
+    const storedTransactions =
+      JSON.parse(localStorage.getItem("transactions")) || [];
+
+    const loadedState = {
+      ...defaultState,
+      ...storedState,
+      transactions: storedTransactions,
+      pendingTransactions: storedState.pendingTransactions || [],
+    };
+
+    console.log("Loaded state from localStorage:", loadedState);
+    return loadedState;
+  } catch (error) {
+    console.error("Error loading state from localStorage:", error);
+  }
+  return initialState;
+};
+
+const saveStateToLocalStorage = (state) => {
+  try {
+    localStorage.setItem(
+      "authState",
+      JSON.stringify({
+        token: state.token,
+        user: state.user,
+        isLoggedIn: state.isLoggedIn,
+        users: state.users,
+        events: state.events,
+        pendingTransactions: state.pendingTransactions,
+      })
+    );
+    localStorage.setItem("transactions", JSON.stringify(state.transactions));
+    console.log("State saved to localStorage:", state);
+  } catch (error) {
+    console.error("Error saving state to localStorage:", error);
+  }
+};
+
+export const reducer = (state, action) => {
+  let newState;
+
+  console.log("Current State:", state);
+  console.log("Action Received:", action);
+
+  switch (action.type) {
+    case "LOGIN":
+      const loginEvent = {
+        title: "Вхід в акаунт",
+        info: `Вхід користувача ${
+          action.payload.user.email
+        } о ${new Date().toLocaleString()}`,
+        time: new Date(),
+        user: action.payload.user.email,
+      };
+      newState = {
+        ...state,
+        token: action.payload.token,
+        user: action.payload.user,
+        isLoggedIn: true,
+        events: [...state.events, loginEvent],
+      };
+      break;
+
+    case "LOGOUT":
+      const logoutEvent = {
+        title: "Вихід з акаунту",
+        info: `Вихід користувача ${
+          state.user ? state.user.email : ""
+        } о ${new Date().toLocaleString()}`,
+        time: new Date(),
+        user: state.user ? state.user.email : "",
+      };
+      newState = {
+        ...initialState,
+        users: state.users,
+        transactions: state.transactions,
+        pendingTransactions: state.pendingTransactions,
+        events: [...state.events, logoutEvent],
+      };
+      console.log("Action LOGOUT:", action, "New State:", newState);
+      break;
+
+    case "REGISTER_USER":
+      const newUser = {
+        title: "Реєстрація користувача",
+        info: `Створений користувач ${
+          action.payload.newUser.email
+        } о ${new Date().toLocaleString()}`,
+        time: new Date(),
+        ...action.payload.newUser,
+        confirmed: action.payload.newUser.confirmed || false,
+        confirmationCode: action.payload.newUser.confirmationCode || "",
+        user: action.payload.newUser.email,
+      };
+
+      newState = {
+        ...state,
+        users: [...state.users, action.payload.newUser],
+        events: [...state.events, newUser],
+      };
+      console.log("Action REGISTER_USER:", action, "New State:", newState);
+      break;
+
+    case "REMOVE_USER":
+      const removeEvent = {
+        title: "Видалення акаунту",
+        info: `Видалено користувача ${
+          state.user ? state.user.email : ""
+        } о ${new Date().toLocaleString()}`,
+        time: new Date(),
+        user: action.payload.email,
+      };
+      newState = {
+        ...state,
+        users: state.users.filter(
+          (user) => user.email !== action.payload.email
+        ),
+        events: [...state.events, removeEvent],
+      };
+      console.log("Action REMOVE_USER:", action, "New State:", newState);
+      break;
+
+    case "UPDATE_USER_EMAIL":
+      const updateUserEmailEvent = {
+        title: "Зміна пошти",
+        info: `Змінено пошту користувача ${action.payload.oldEmail} на ${
+          action.payload.newEmail
+        } о ${new Date().toLocaleString()}`,
+        time: new Date(),
+        user: action.payload.oldEmail,
+      };
+      newState = {
+        ...state,
+        users: state.users.map((user) =>
+          user.email === action.payload.oldEmail
+            ? { ...user, email: action.payload.newEmail }
+            : user
+        ),
+        events: [...state.events, updateUserEmailEvent],
+      };
+      console.log("Action UPDATE_USER_EMAIL:", action, "New State:", newState);
+      break;
+
+    case "UPDATE_USER_PASSWORD":
+      const updateUserPasswordEvent = {
+        title: "Зміна пароля",
+        info: `Змінено пароль користувача ${action.payload.oldPassword} на ${
+          action.payload.newPassword
+        } о ${new Date().toLocaleString()}`,
+        time: new Date(),
+        user: action.payload.email,
+      };
+      newState = {
+        ...state,
+        users: state.users.map((user) =>
+          user.email === action.payload.email
+            ? { ...user, password: action.payload.newPassword }
+            : user
+        ),
+        events: [...state.events, updateUserPasswordEvent],
+      };
+      console.log(
+        "Action UPDATE_USER_PASSWORD:",
+        action,
+        "New State:",
+        newState
+      );
+      break;
+
+    case "CONFIRM_USER":
+      newState = {
+        ...state,
+        users: state.users.map((user) =>
+          user.email === action.payload.email
+            ? { ...user, confirmed: true, confirmationCode: "" }
+            : user
+        ),
+      };
+      console.log("Action CONFIRM_USER:", action, "New State:", newState);
+      break;
+
+    case "ADD_TRANSACTION":
+      newState = handleAddTransaction(state, action);
+      break;
+
+    case "CONFIRM_TRANSACTION":
+      newState = handleConfirmTransactionStatus(state, action);
+      break;
+
+    case "CLEAR_TRANSACTIONS":
+      newState = {
+        ...state,
+        transactions: [],
+        pendingTransactions: [],
+      };
+      console.log(
+        "Action CLEAR_TRANSACTIONS: Cleared all transactions",
+        newState
+      );
+      break;
+
+    case "CLEAR_EVENTS":
+      newState = {
+        ...state,
+        events: [],
+        combinedEvents: [],
+      };
+      console.log(
+        "Action CLEAR_EVENTS:",
+        action,
+        "Cleared all events",
+        newState
+      );
+      break;
+
+    case "CLEAR_USERS":
+      const adminUser = state.users.find((user) => user.isAdmin);
+      newState = {
+        ...state,
+        users: adminUser ? [adminUser] : [],
+      };
+      console.log(
+        "Action CLEAR_USERS:",
+        action,
+        "Cleared all users except admin",
+        newState
+      );
+      break;
+//add case "UPDATE_USER_BALANCE" 27.07.24
+      case "UPDATE_USER_BALANCE":
+      newState = {
+        ...state,
+        user: {
+          ...state.user,
+          balance: action.payload,
+        },
+      };
+      break;
+
+    default:
+      newState = state;
+      console.log("Unhandled action type:", action);
+  }
+
+  saveStateToLocalStorage(newState);
+
+  console.log("New State after saving to localStorage:", newState);
+  return newState;
+};
+
+export const AuthProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(
+    reducer,
+    initialState,
+    loadStateFromLocalStorage
+  );
+
+  useEffect(() => {
+    saveStateToLocalStorage(state);
+    console.log("AuthProvider State: ", state);
+  }, [state]);
+
+  const updateUserBalance = (newBalance) => {
+    dispatch({ type: "UPDATE_USER_BALANCE", payload: newBalance });
+  };
+
+  return (
+    <AuthContext.Provider value={{ ...state, dispatch,updateUserBalance }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export default AuthProvider;
+
+// Файл AuthActions
+export const userIdGenerator = (email) => {
+  const datePart = new Date().toISOString().replace(/\D/g, "");
+  const emailPart = email.replace(/[^a-zA-Z0-9]/g, "");
+  return `${emailPart}_${datePart}`;
+};
+
+export const generateTransactionId = () => {
+  return new Date().toISOString().replace(/\D/g, "");
+};
+
+export const generateConfirmationCode = () => {
+  return Math.random().toString(36).substring(2, 12);
+};
+
+export const registerUser = (email, password, dispatch) => {
+  const confirmationCode = generateConfirmationCode();
+
+  const newUser = {
+    id: userIdGenerator(email),
+    email,
+    password,
+    confirmationCode,
+    confirmed: false,
+    isAdmin: email === "admin@admin",
+  };
+
+  dispatch({
+    type: "REGISTER_USER",
+    payload: {
+      newUser,
+    },
+  });
+
+  console.log(`AuthActions: Registered new user: ${email}`);
+  return {
+    success: true,
+    message: "User successfully registered.",
+    user: newUser,
+  };
+};
+
+export const confirmUser = (email, confirmationCode, users, dispatch) => {
+  const user = users.find(
+    (u) => u.email === email && u.confirmationCode === confirmationCode
+  );
+
+  if (user) {
+    dispatch({
+      type: "CONFIRM_USER", // Діспачим дію Redux типу "CONFIRM_USER"
+      payload: { email, confirmationCode },
+    });
+    console.log(`User ${email} confirmed successfully.`);
+    return { success: true, message: "User confirmed successfully." };
+  } else {
+    console.log(`Failed to confirm user ${email}.`);
+    return { success: false, message: "Invalid confirmation code." };
+  }
+};
+
+export const updatePassword = (email, newPassword, dispatch) => {
+  dispatch({
+    type: "UPDATE_USER_PASSWORD",
+    payload: { email, newPassword },
+  });
+
+  console.log(`Пароль для ${email} оновлено успішно.`);
+  return { success: true, message: "Пароль оновлено успішно." };
+};
+
+export const deleteAccount = (user, email, dispatch, loggedInUser) => {
+  if (
+    loggedInUser.email !== email &&
+    !loggedInUser.isAdmin &&
+    email === user.email
+  ) {
+    console.log("No privilege to delete the account.");
+    return { success: false, message: "No privilege to delete the account." };
+  }
+
+  dispatch({
+    type: "REMOVE_USER",
+    payload: { email },
+  });
+
+  console.log(`Акаунт ${email} видалено.`);
+  return { success: true, message: "Акаунт успішно видалено." };
+};
+
+//Створено для сторінки адміна
+export const deleteUserAccount = (email, dispatch) => {
+  dispatch({
+    type: "REMOVE_USER",
+    payload: { email },
+  });
+
+  console.log(`Account for ${email} has been deleted.`);
+};
+
+export const confirmTransaction = (transactionId, dispatch) => {
+  dispatch({
+    type: "CONFIRM_TRANSACTION",
+    payload: { transactionId },
+  });
+
+  console.log(`Transaction ${transactionId} confirmed.`);
+  return {
+    success: true,
+    message: `Transaction ${transactionId} confirmed.`,
+  };
+};
+
+// Файл TransactionList.js
+import React, { useContext, useEffect, useState } from "react"; // Імпорт основних модулів React та хуків
+import { Link } from "react-router-dom"; // Імпорт компонента Link для навігації
+import { AuthContext } from "../../AuthContext"; // Імпорт контексту аутентифікації
+import "./style.css"; // Імпорт стилів
+
+const TransactionList = () => {
+  const {
+    user,
+    transactions: initialTransactions,
+    pendingTransactions,
+  } = useContext(AuthContext); // Використання контексту для отримання користувача і початкового списку транзакцій
+  const [transactions, setTransactions] = useState(initialTransactions); // Створення стану для транзакцій
+
+  const timeElapsed = (timestamp) => {
+    const now = Date.now(); // Поточний час
+    const diff = (now - new Date(timestamp).getTime()) / 1000; // Різниця часу в секундах
+
+    if (diff < 3600) {
+      const minutes = Math.floor(diff / 60);
+      return `${minutes} minutes ago`; // Вивід часу у хвилинах
+    } else if (diff < 86400) {
+      const hours = Math.floor(diff / 3600);
+      return `${hours} hours ago`; // Вивід часу у годинах
+    } else {
+      const days = Math.floor(diff / 86400);
+      return `${days} days ago`; // Вивід часу у днях
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTransactions(
+        transactions.map((transaction) => ({
+          ...transaction,
+          timeElapsed: timeElapsed(transaction.time), // Оновлення часу, що минув
+        }))
+      );
+    }, 5000); // Інтервал в 5 секунд
+
+    return () => clearInterval(interval);
+  }, [transactions]);
+
+  // Фільтрація транзакцій, які відносяться до зареєстрованого користувача, та сортування їх за часом у зворотному порядку
+  const filteredTransactions = transactions
+    .filter(
+      (t) =>
+        (t.from === user.email && t.type === "send") ||
+        (t.to === user.email && t.type === "receive")
+    )
+    .sort((a, b) => new Date(b.time) - new Date(a.time)); // Сортування за часом, найсвіжіші транзакції першими
+
+  return (
+    <div className="transaction-container">
+      <div className="transaction-list">
+        {filteredTransactions.length > 0 ? (
+          filteredTransactions.map((transaction) => (
+            <div key={transaction.transactionId}>
+              <Link to={`/transaction/${transaction.transactionId}`}>
+                <div className="transaction-item">
+                  <div className="transaction-logo">
+                    <img
+                      src={`/transIcons/${
+                        transaction.isPending
+                          ? "transNotPending.svg"
+                          : transaction.type === "send"
+                          ? "transSend.svg"
+                          : "transReseive.svg"
+                      }`}
+                      alt="Event logo"
+                    />
+                  </div>
+                  <div className="transaction-details">
+                    <div className="transaction-title">
+                      <h6>
+                        {transaction.type === "send"
+                          ? `${transaction.type} to ${transaction.to}`
+                          : `${transaction.type} from ${transaction.from}`}
+                      </h6>
+                    </div>
+                    <div className="transaction-info">
+                      <h6>
+                        {transaction.isPending && (
+                          <span className="unconfirmed">{"unconfirmed"}</span>
+                        )}{" "}
+                        <span>{transaction.timeElapsed}</span>
+                      </h6>
+                    </div>
+                  </div>
+                  <div>
+                    <h4
+                      className={`transaction-amount ${
+                        transaction.isPending
+                          ? "amount-grey"
+                          : transaction.type === "send"
+                          ? "amount-black"
+                          : "amount-green"
+                      }`}
+                    >
+                      {transaction.type === "send" ? "-" : "+"}$
+                      {transaction.amount.toFixed(2)}
+                    </h4>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          ))
+        ) : (
+          <div>No transactions found</div> // Повідомлення, якщо немає транзакцій
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default TransactionList;
+// Файл UserTransactionsPage
+import React, { useContext } from "react";
+import { Link, useParams } from "react-router-dom";
+import { AuthContext } from "../../AuthContext";
+import TransactionList from "../../component/TransactionList";
+import TitleComponent from "../../component/TitleComponent";
+import UsersBlock from "../../component/UsersBlock";
+
+const UserTransactionsPage = () => {
+  const { userId } = useParams();
+  const { user, users, transactions } = useContext(AuthContext);
+
+  const currentUser = users.find((u) => u.id === userId);
+
+  let userTransactions;
+  if (user.isAdmin) {
+    userTransactions = transactions.filter(
+      (transaction) =>
+        transaction.from === currentUser.email ||
+        transaction.to === currentUser.email
+    );
+  } else {
+    userTransactions = transactions.filter(
+      (transaction) =>
+        (transaction.from === user.email || transaction.to === user.email) &&
+        (transaction.from === currentUser.email ||
+          transaction.to === currentUser.email)
+    );
+  }
+
+  const pageTitle = "Transactions"; // передати  заголовок
+
+  return (
+    <div className="default-container">
+      <TitleComponent pageTitle={pageTitle} />
+      <h5>User {currentUser.email}</h5>
+      <TransactionList transactions={userTransactions} />
+      <div className="UsersBlockSpace">
+        <UsersBlock user={user} />
+      </div>
+    </div>
+  );
+};
+
+export default UserTransactionsPage;
+

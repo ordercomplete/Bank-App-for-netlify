@@ -1,0 +1,966 @@
+Архів-1 (Створи файли відразу зі стилями AuthContext, AuthRoute, SignupPage, SignupConfirmPage, SigninPage, RecoveryPage, RecoveryConfirmPage, PrivateRoute, BalancePage виконуючи Опис зі створення файлів.
+Також створи файл стилів, в якому будуть знаходитись всі стилі всіх файлів, зразок яких надано у файлі style.css. Всі кнопки при натисканні повинні змінювати тон кольору: сині повинні світліти, білі повинні затемнятись світло-сірим.)
+
+Архів-2 (1. SendPage На цій сторінці відбувається подвійний запит на оновлення "[Violation] 'submit' handler took 2824ms", якщо можливо, то прибери це подвоєння. З'являється помилка: "Unchecked runtime.lastError: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received". Також внеси інші зміни з Опису створення файлу SendPage.
+2. receivePage На цій сторінці відбувається подвійний запит на оновлення "[Violation] 'click' handler took 1337ms", якщо можливо, то прибери це подвоєння. Також внеси інші зміни з Опису створення файлу receivePage.
+3. Якщо оновити сторінку BalancePage вже після створення користувача, а потім вийти та зайти, то цього користувача не знаходить. Знайти рішення. Розв'язати проблему: "Властивість "user" оголошено, але його значення не було прочитано". Також внеси інші зміни з Опису створення файлу BalancePage.
+Тут розбиваю для наступного запитання...
+4. Враховуючи опис зі створення  файлів  11. NotificationsPage, 12. SettingsPage, 15. TransactionPage запропонуй виправлений код цих файлів, вихідний код яких я надам нижче.
+5. Додати кнопку "Видалити акаунт" на сторінку SettingsPage так само як на сторінці SigninPage.)
+
+Архів-3 (1. Доопрацювати компонент transactions та сторінки receivePage, SendPage та TransactionPage(та інші які потрібно) таким чином, щоб виконувались такі функції:
+a. створювався унікальний номер транзакції(вже створюється), враховуючи, що назва змінної яка визначає номер транзакції в файлі App.js має назву transactionId, а шлях до створеної сторінки транзакції має посилання path="/transaction/:transactionId".
+b. відбувалось додавання чи віднімання від стартового (поточного) балансу сум залежно від проведених транзакцій, збільшення при отриманні (на сторінці receivePage (/receive)) та зменшенні при відправленні (на сторінці SendPage (/send));
+c. після створення будь-якої транзакції повинен відбуватися перехід на сторінку баланса;
+d. всі транзакції відображувались на сторінці балансу
+e. додати логування у кожному з цих файлів для максимальної видимості подій у консолі браузера для пошуку помилок.
+f. У файлі BalancePage вирішити проблему: Властивість "user" оголошено, але його значення не було прочитано)
+
+Архів-4 (1. Створити сторінку зі списком зареєстрованих користувачів з посиланням на нього у верхній частині сторінки BalancePage між Settings та Notifications.
+2. Створити відображення імені поточного користувача над Main Wallet у файлі BalancePage.
+3. Створити генератор userId для створення нових користувачів і вбудувати взаємозв'язок у потрібні файли. У файлі компонента transaction запрпонованийй приклад використання userId, треба теж це узгодити.
+4. Завжди створюй логування відразу у коді у кожному файлі для максимальної видимості подій у консолі браузера для пошуку помилок.)
+
+Архів-5 (1. Вирішити проблему відсутності списку зареєстрованих користувачив на сторінці UsersPage.
+2. Додати на сторінку NotificationsPage виводу всіх відсутніх подій з наступного списку: Вхід в акаунт, Вихід з акаунту, Відновлення акаунту, Зміна пароля, Зміна пошти, Поповнення (ім'я користувача, сума, дата), Переказ (ім'я користувача, сума, дата). Один блок - одна подія, повинен складатись з назви події, дати та часу. При переповненні подіями сторінки повинна з'явитися прокрутка. На сторінці вгорі зліва повинна бути стрілка "назад" для повернення на попередню сторінку.)
+
+Архів-6 (Події, які виводяться у файлі NotificationsPage, зберігаються незалежно від зміни користувача чи оновлення сторінок. В той же час акаунти користувачів зникають після оновлення сторінки BalancePage. 
+Треба зробити таке ж зберігання акаунтів як і зберігання нотифікацій у NotificationsPage тобто на постійній основі. Також після виходу з акаунту всі його транзакції на сторінці BalancePage зникають а також вони зникають з нотифікацій на сторінці NotificationsPage. 
+Треба додати логування видалення чи обнулення акаунту в консоль.)
+
+Архів-7 (Загальні вимоги до всіх сторінок зі словом ...Page: 
+b. в інтерфейсі сторінки вгорі зліва повинна бути стрілка "назад" для повернення на попередню сторінку.
+c. на всіх сторінках де відбувається пі)дтвердження дії повинна бути кнопка "Continue" або будь-яка назва відповідна до дії на сторінці.
+
+Архів-8 (Проблема: На даний момент користувачі зникають при оновлені сторінки BalancePage та будь-якої іншої після проходження аутентифікації. Але на сторінці UsersPage створюється фіксований список раніше створених акаунтів, в який додаються акаунти з повторюваними логінами. 
+1.Потрібно унеможливити створення та зберігання акаунтів з вже існуючими іменами на будь-яких сторінках де є зберігання користувачів.
+2.Чи можна у файлі NotificationsPage зробити створення транзакцій з таким же зберіганням як і при створенні загальних подій?)
+
+Архів-9 (1. Зробити відображення нотифікацій спочатку останніх. 
+Проблема: 
+На сторінці DeleteAccountPage, RecoveryPage та RecoveryConfirmPage не знаходить акаунтів для взаємодії. 
+Завдання:
+Узгодити звертання на сторінці DeleteAccountPage, RecoveryPage та RecoveryConfirmPage до масиву користувачів як на сторінці SigninPage.
+При видаленні акаунту на сторінці DeleteAccountPage назва цього акаунту не зникає зі списку на сторінці UsersPage.)
+
+Архів-10 (З'явилась помилки при спробі відправити та отримати кошти на сторінках SendPage та ReceivePage після введення даних та натисканні відповідних кнопок:
+
+Cannot read properties of undefined (reading 'type')
+TypeError: Cannot read properties of undefined (reading 'type')
+та 
+The above error occurred in the <BalancePage> component)
+
+Архів-11 (Проблема:
+При натисканні на посилання транзакції на сторінці BalancePage сторінка TransactionPage показує повідомлення: "Transaction not found", але в посилання є id транакції. Знайти причину та рішення.
+Завдання:
+На сторінках SendPage та ReceivePage вже створена можливість вказати email реального користувача, котрий потім буде відображатися у транзакції та нотифікації, але немає перевірки на наявність його у базі даних. 
+1.Зробити постійне збереження транзакцій і прив'язати як до відправника так і до отримувача коштів.
+2.Систему грошових переказів відобразити у вертикальному списку.
+3.Додати поле вводу для email користувача від якого треба отримати грошовий переказ. Отримати переказ можна буде при умові, якщо вказаний користувач відправив конкретно вказану суму і збігається вид грошового переказу.
+4.Потрібно, щоб вже змінений баланс користувача зберігався разом зі транзакціями між сесіями.)
+
+Архів-12 (Запитання:
+Поясни як взаємодіють між собою та іншими файлами Симульована база даних користувачів "export const usersDatabase = []" у файлах AuthActions та UsersPage, та Зберігання користувачів в контексті в AuthContext "users: []"?
+
+Завдання: (втілюй по можливості всі рішення відразу у першому варіанті коду)
+На сторінках SendPage та ReceivePage вже створена можливість вказати email реального користувача, котрий потім буде відображатися у транзакції та нотифікації та є перевірка на наявність його у базі даних. 
+1. Треба додати зробити перевірку на відповідність типу платежу, та отримувач не мав той самий email. 
+2. Зробити постійне збереження транзакцій і прив'язати як до відправника так і до отримувача коштів.
+3. Систему грошових переказів відобразити у вертикальному списку.
+4. Передумовою отримання "переказу" повинно бути створення "відправлення", якщо вказаний користувач відправив конкретно вказану суму і збігається вид грошового переказу.
+5. Потрібно, щоб вже змінений баланс користувача зберігався разом зі транзакціями між сесіями.)
+
+Архів-13 (Проблема:
+На сторінках SendPage та ReceivePage вже створена можливість вказати email реального користувача, котрий відображується у транзакції та нотифікації та є перевірка на наявність його у базі даних. Але немає збереження транзакцій та зміни балансу користувача між сесіями. Ця проблема може бути пов'язана з незгодженням файлів transactions, TransactionList та TransactionPage.
+Завдання:
+При створенні транзакції відправлення вона повинна зберігатися у стані як невиконана до тих пір, доки отримувач не створить транзакцію отримання та не підтвердить точну вказану суму у транзакції переказу та вид грошового переказу (одну з цих: "Western Union", "MoneyGram", "RIA", "IntelExpress", "MEEST", "Welsend"). При створенні транзакції відправлення на екрані повідомляється id транзакції, яке також буде підтвердженням при отриманні транзакції, для чого треба створити поле вводу для id транзакції на сторінці ReceivePage.
+Якщо будеш змінювати файл AuthContext, то додай до кожної події час по аналогії з case "LOGIN" для подальшого виведення всіх подій у NotificationsPage.)
+
+Архів-14 (1. Наразі створено зберігання транзакцій на сторінці BalancePage і вони вже прив'язані до конкретного користувача. Транзакції створюються на сторінці тільки у того користувача, який їх створює. Але при отриманні вже створениої транзакції з'являється повідомлення: "No corresponding send transaction found." Знайти рішення.
+2. У файлі AuthContext case "ADD_TRANSACTION" та case "UPDATE_TRANSACTION_STATUS" мають значно більший об'єм коду, ніж інші кейси. Чи можливо частину їх коду перенести до файлу transactions.js, де і повинна знаходитися вся логіка стосовно транзакцій? такод у блоці case "UPDATE_TRANSACTION_STATUS" константа updatedUsers повідомляє попередження: "'updatedUsers' is constant", але після додавання const видає помилку: Неможливо повторно оголосити змінну "updatedUsers" з областю видимості "Блок".
+Завдання:
+Створити транзакцію типу "MoneyGram" без підтвердження отриманя, після створення якої відразу змінюється баланс як відправника так і отримувача на вказану суму.)
+
+Архів-15 (Проблема:
+При відправленні методом "MoneyGram" створюється у відправника дві транзакції: відправлення та отримання, але транзакція отримання повинна з'являтися тільки у отримувача. При чому у відправника знімається сума, вказана у транзакції, а отримувач отримує правильну суму. Але коли вийти з акаунту відправника та знову в нього повернутися, то зникають ці дві транзакції і у отримувача вони не з'являються, а баланси користувачів залишаються оновленими враховуючи останню транзакцію.
+Завдання:
+Зробити при відправленні методом "MoneyGram" показ транзакції відправлення у відправника, а транзакцію отримання у отримувача транзакції, все це зберігати на постійній основі. Додати кнопку скидання транзакцій на сторінці BalancePage (або у файлі TransactionList) по аналогії case "CLEAR_EVENTS".)
+
+Архів-16 (Завдання
+1. Давай уважно проаналізуємо структуру файлу AuthContext. Наскільки важлива послідовність розташування функцій завантаження за збереження користувачів (users), транзакцій та стану?
+2. Аналізуючі console.log всіх цих функцій не зрозцміло чому вони повторюються у консолі браузера та не один раз? Це нормально і що з цим робити? Проаналізуй кожну функцію на предмет дублювання дій та чи можливо спростити код не зменшуючи функціонал?
+3. Що дає const loadStateFromLocalStorage, у якій ніби завантажуємо транзакції окремо?
+4. Навіщо окремі додаткові збореження та завантаження, якщо в state це знаходиться разом?
+5. До чого я це все питаю? Тому що знову створюючи одну транзакцію відправлення отримувач отримує вірну суму, але не отримує транзакції на свою сторінку. А при повернені на сторінку відправника зникають всі створені транзакції, але баланс залишається зміненим.)
+
+Архів-17 (Завдання:
+За постійне збереження всіх даних відповідає файл AuthContext. Але у файлах AuthActions, UsersPage, SettingsPage та SignupConfirmPage дані зберігаються у usersDatabase. Я хочу, щоб всі дані зберігались в одному місці і це файл AuthContext.
+)
+
+Архів-18 (Проблема:
+При підтвердженні реєстрації на сторінці SignupConfirmPage при вводі коду підтвердження видає:
+TypeError: Cannot read properties of undefined (reading 'confirmed')
+    at reducer (AuthContext.js:125:1)
+    at updateReducer
+
+На мій погляд є якась плутанина при створенні користувача між user та newUser. Також треба узгодити проблеми перевірки токена, бо він не створюється.)
+
+Архів-19 (Проблема:
+При спробі відновити акаунт та змінити пароль видає помилку:
+dispatch is not a function
+TypeError: dispatch is not a function
+    at updatePassword (http://localhost:3000/static/js/bundle.js:537:3)
+    at handleRestore )
+
+Архів-20 (Проблема:
+Наразі підтвердження транзакції відбувається в момент виходу з акаунту відправника, транзакції спочатку з'являються в TransactionList, а після виходу з акаунту зникають. У отримувача взагалі не з'являються транзакції в TransactionList, але при цьому баланси відправника і отримувача змінюються.
+
+У нас є два види транзакцій: "Western Union" - з підтвердженням отримання в акаунті отримувача та "MoneyGram" - без підтвердження на стороні отримувача. 
+
+Завдання:
+Транзакція відправлення "Western Union" повинна створювати спочатку транзакцію відправлення та повідомлення під балансом про резервування даної суми у відправника та очікувати створення транзакції отримання на стороні отримувача, якою він завершує цю транзакцію і в цей момент отримувачу зараховується вказана сума, а у відправника знімається вказана сума та зникає повідомлення про резерв цієї суми та з'являється транзакція про отримання. 
+Транзакція відправлення "MoneyGram" відразу знімає вказану суму у відправника та зараховує її отримувачу та створює транзакцію відправлення в акаунті відправника та транзакцію отримувача в акаунті отримувача.)
+
+Архів-21 (Проблема:
+З'явилась помилка в момент видалення акаунта на сторінці DeleteAccountPage:
+dispatch is not a function
+TypeError: dispatch is not a function
+    at deleteAccount 
+    at handleDelete 
+це місце в файлі AuthActions:
+export const deleteAccount = (email, dispatch) => {
+  dispatch({
+    type: "REMOVE_USER",
+    payload: { email },
+  });}
+та місце в файлі DeleteAccountPage:
+ const deleteResponse = deleteAccount(email.value, password.value, dispatch);)
+
+ Архів-22 (Завдання:
+1.Додати до всій кейсів у файлі AuthContext івенти по аналогії з case "LOGIN" та case "LOGOUT". (Не зробило)
+2.Всю логіку case "ADD_TRANSACTION" та case "CONFIRM_TRANSACTION" збережи у файл transactions.js у відповідні змінні handleAddTransaction та handleConfirmTransactionStatus. (зробило)
+3.id всіх транзакцій відтворити як число, створене з дати та часу створення самої транзакції, але записане без додаткових символів, тільки числа - цей генератор повинен знаходитись у файлі AuthActions під назвою generateTransactionId. (зробило)
+4. Створи генератор userId як число, створене з дати та часу створення нового користувача з додаванням його имейлу на початку - цей генератор повинен знаходитись у файлі AuthActions під назвою userIdGenerator. (зробило))
+
+Архів-23 (
+  Запитання:
+У файлі AuthContext у нас є дев'ять основних кейсів: LOGIN, LOGOUT, REGISTER_USER, REMOVE_USER, UPDATE_USER_EMAIL, UPDATE_USER_PASSWORD, CONFIRM_USER, ADD_TRANSACTION, CONFIRM_TRANSACTION. А в файлі AuthActions такі п'ять змінних: registerUser, confirmUser, updatePassword, deleteAccount, confirmTransaction. Чому у фалйі AuthActions не має відповідних дій до інших кейсів з AuthContext? Чи вони знаходяться в інших файлах?
+Проблема:
+При створенні транзакції методом "Western Union" на стороні отримувача не знаходить транзайцію
+Також: у файлі BalancePage властивість "userPendingTransactions" оголошено, але його значення не було прочитано)
+
+Архів-24 (Проблема: 
+1. при видаленні власного акаунту виникає така помилка:
+dispatch is not a function
+TypeError: dispatch is not a function
+    at deleteAccount - dispatch({type: "REMOVE_USER", payload: { email },});
+    at handleDelete - const deleteResponse = deleteAccount(email.value, password.value);
+Але пам'ятаємо, що треба унеможливити видалення з поточного акаунту іншого акаунту, крім можливості видаляти будь-які акаунти від імені admin@admin зі статусом isAdmin: true.
+Завдання:
+1. До посилання to="/users" на сторінці BalancePage повинен мати акаунт від імені admin@admin зі статусом isAdmin: true.
+Проблема: 
+Створений вбудований акаунт адміністратора з логіном "admin@admin" та паролем "admin" не знаходить при спробі входу. Чи не влинуло на його зникнення дія case "CLEAR_USERS"?
+Ми підемо іншим шляхом.
+Створи призначення статусу адміністратора при створенні нового користувача, якщо імейл буде admin@admin
+Проблема: 
+ Сторінка /user-data не працює: Error 404: Page Not Found)
+
+Архів-25 (Проблема:
+Наразі адмін бачить в нотифікаціях зміну пароля іншого користувача, а поточний користувач не бачить цю зміну. Також поточний користувач не бачить видалення свого акаунту після того як створюється користувач повторно з таким самим ім'ям.
+Завдання:
+1.Зробити відображення всіх подій по аналогії зі case "LOGIN та case "LOGOUT"
+2.При зміні пароля на сторінці SettingsPage створити повідомлення під полем вводу про невірний пароль при вводі невірного поточного пароля.
+3.При зміні імейлу на сторінці SettingsPage створити повідомлення під полем вводу про невірний пароль при вводі невірного поточного пароля.)
+
+Архів-26 (Завдання:
+1. Створити вбудований акаунт адміністратора з логіном "admin@admin" та паролем "admin" з розширеними повноваженнями:
+- з можливістю видалення будь-якого акаунту
+- переглядом всіх подій та всіх транзакцій, 
+- список транзакцій для нього повинен бути доступний в посиланні кожного користувача на сторінці UsersPage. Для цього можна створити окрему сторінку UserData
+2. Треба унеможливити видалення з поточного акаунту іншого акаунту.
+3. При зміні пароля на сторінці SettingsPage створити повдомлення про невірний пароль при вводі невірного поточного пароля.
+4. При зміні імейлу на сторінці SettingsPage створити повдомлення про невірний пароль при вводі невірного поточного пароля.)
+
+Архів-27 (Завдання:
+1. При зміні пароля на сторінці SettingsPage створити повідомлення про невірний пароль при вводі невірного поточного пароля.
+2. При зміні імейлу на сторінці SettingsPage створити повідомлення про невірний пароль при вводі невірного поточного пароля.
+3. У файлі UsersPage дані кожного користувача обрами рамкою, посилання на видалення червоним шрифтом з та маленькою кнопкою, посилання на Транзакції синім шрифтом та маленькою кнопкою.)
+
+Архів-28 (Проблема:
+При спробі зміни імейлу на сторінці SettingsPage видає помилку:
+Cannot read properties of undefined (reading 'oldEmail')
+TypeError: Cannot read properties of undefined (reading 'oldEmail')
+    at reducer - user: action.payload.newUser.oldEmail - строка у файлі AuthContext
+    at AuthProvider - const [state, dispatch] = useReducer - строка у файлі AuthContext
+
+Завдання:
+1.Помилки про введення невірних даних у будь-які поля вводу вивести в самому полі вводу.
+2.Після вдалої зміни імейлу або паролю запропонувати користувачу у вигляді алерту застосувати зміни шляхом повторного входу в акаунт з новими даними з кнопками вийти та залишитись
+3.Щоб повідомлення помилки з'явилось у полі вводу треба видалити введені дані з поля
+4.Треба додати перевірку на наявність у імейлі знаку @ при реєстрації та заборонити зміну логіну, якщо введений поточний імейл при зміні імейлу або введений імейл вже зареєстрований.)
+
+Архів-29 (Треба адаптувати поля вводу у файлі RecoveryConfirmPage під компонент PasswordInput, зробити компонент PasswordInput більш універсальним для будь-яких полів, де потрібно сховати та підглянути зміст поля.
+Адаптуй поля вводу SettingsPage згідно компоненту PasswordInput.
+Зробити для полів вводу окремо файл стилів, де всі помилки будуть червоного кольору, placeholder сірим.
+Наразі червоним підсвічується два поля в одному блоці form, якщо в одному полі помилка.
+Проблема:
+чомусь при перевірці введеноо логіна на співпадіння з поточним логіном пропускається перевірка if (user.email === newEmail.value) та видає помилку з наступної перевірки "Цей email вже зареєстрований". А коли другу перевірку видаляєш, то перша спрацьовує.)
+
+Архів-30 (Завдання: (враховувати наданий файл стилів)
+Створити оформлення прокрутки в полі transaction-list наступним чином:
+- стрічка прокрутки з'являється лише при наведенні на неї курсором або при дотику до дисплея, зробити ширину стрічки прокрутки вузенькою;
+- створити показ часу як відлік від теперішнього часу до моменту створення транзакції у вигляді такої фрази (наприклад): 5 хвилин тому (якщо це було впродовж минулої години), 5 годин тому (якщо це було сьогодні округлюючи до години), 5 днів тому (округлюючи до доби);
+- приховати показ таких пунктів з className="transaction-info" як: <h3>ID: {transaction.transactionId}</h3>, <span>{transaction.paymentMethod}</span>, <h3>Статус:{" "}{transaction.isPending ? "Pending" : "Completed"}</h3>;
+- прибрати оформлення посилання з підкресленням у всьому блоці Link)
+
+Архів-31 (Завдання:
+Адаптуй поля вводу SigninPage згідно з компонентом PasswordInput.
+Помилки повинні виводитись у полях вводу червоним кольором.
+Проблеми:
+Наразі червоним підсвічується поле вводу email, але там не з'являється текст помилки.
+Назви констант брались з іншого файлу, тому можна їх змінити згідно контексту цього файлу.
+Також є системна помилка:
+Warning: `value` prop on `input` should not be null. Consider using an empty string to clear the component or `undefined` for uncontrolled components.
+    at input
+    at div
+    at form
+    at div
+    at SigninPage (http://localhost:3000/main.e1e5255….hot-update.js:38:81)
+    at AuthRoute (http://localhost:3000/static/js/bundle.js:1020:3)
+    at RenderedRoute (http://localhost:3000/static/js/bundle.js:46200:5)
+    at Routes (http://localhost:3000/static/js/bundle.js:46891:5)
+    at Router (http://localhost:3000/static/js/bundle.js:46825:15)
+    at BrowserRouter (http://localhost:3000/static/js/bundle.js:44778:5)
+    at AuthProvider (http://localhost:3000/static/js/bundle.js:934:3)
+    at App)
+
+Архів-32 (Завдання:
+Вікно Swal.fire title: "Recovery Code" повинно бути з однією кнопкою підтвердження та оночасно копіювання коду до буферу, після натискання якої зникає це вікно та з'являється спливаюче вікно з підтврдженням, що код скопійовано. Наразі код не копіюється у буфер та спливаюче вікно не з'являється. Також потрібна можливість редагування всіх стилів цих вікон включаючи розмір вікон і так далі.)    
+
+//=======================
+Створюй логування у кожному файлі для кожної суттєвої події для максимальної видимості подій у консолі браузера для пошуку помилок.
+
+id всіх транзакцій відтворити як число, створене з дати та часу створення самої транзакції, але записане без додаткових символів, тільки числа.
+//=======================
+
+Створи код посилання типу Link з назвою HOME та іконкою, в якому буде перехід для авторизованих користувачів на сторінку to="/balance", а для неавторизованих користувачів на сторінку WellcomePage тобто початкову to="/".
+
+//=======================
+При появі стрічки прокрутки весь блок transaction-list зміщюється вліво, відцентровуючись вже разом з прокруткою у блоці transaction-container. Потрібно, щоб без прокрутки блок стояв по центру і так і залишався після появи прокрутки. - не виправилось!!!
+//=======================
+Завдання:
+ Створи окремий файл компонента та код для імпорту (враховуючи надані мною фрагменти коду) код посилання типу Link та посиланням на іконку, в якому буде перехід на попередню сторінку, якщо попередня сторінка відсутня або перехід відбувається на авторизовану сторінку, то для неавторизованих користувачів на сторінку WellcomePage тобто початкову to="/", а для авторизованих користувачів зробити перехід на сторінку to="/balance". Доопрацюй наданий файл. Поки що цей блок не працює належним чином.
+//=======================
+
+
+Ми створюємо додаток Bank App. 
+Відповідай англійською, якщо так буде витрачатись менше токенів на відповідь. 
+Всі додані зміни у коді обов'язково коментуй поруч зі змінами в коді (підтверди як зрозумів). 
+Генеруй код лише тих фрагментів, які змінюються та не переписуй все цілком (підтверди як зрозумів).
+Якщо продовжуєш, то починай з моменту закінчення попередньої відповіді (підтверди як зрозумів).
+
+Структура запиту:
+1. Запитання, Завдання чи Проблеми для вирішення.
+2. Опис зі створення файлів (надам якщо потрібно).
+3. Код вже створених файлів, які треба взяти за основу або треба доопрацювати.
+
+
+Далі код вже наявних файлів:
+
+//Файл App.js
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { PrivateRoute } from "./PrivateRoute";
+import { SigninPage } from "./container/SigninPage";
+import { SignupPage } from "./container/SignupPage";
+import { AuthProvider } from "./AuthContext";
+import { SignupConfirmPage } from "./container/SignupConfirmPage";
+import { RecoveryConfirmPage } from "./container/RecoveryConfirmPage";
+import { RecoveryPage } from "./container/RecoveryPage";
+import { DeleteAccountPage } from "./container/DeleteAccountPage";
+import { UsersPage } from "./container/UsersPage";
+import AuthRoute from "./AuthRoute";
+import WellcomePage from "./container/WellcomePage";
+import SendPage from "./container/SendPage";
+import TransactionPage from "./container/TransactionPage";
+import BalancePage from "./container/BalancePage";
+import NotificationsPage from "./container/NotificationsPage";
+import SettingsPage from "./container/SettingsPage";
+import ReceivePage from "./container/ReceivePage";
+import Error from "./container/ErrorPage";
+
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            index
+            element={
+              <AuthRoute>
+                <WellcomePage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <AuthRoute>
+                <SignupPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/signup-confirm"
+            element={
+              <PrivateRoute allowUnconfirmed={true}>
+              {<SignupConfirmPage />}
+              </PrivateRoute>}
+          />
+          <Route
+            path="/signin"
+            element={
+              <AuthRoute>
+                <SigninPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/recovery"
+            element={
+              <AuthRoute>
+                <RecoveryPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/recovery-confirm"
+            element={
+              <AuthRoute>
+                <RecoveryConfirmPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/delete-account"
+            element={
+              <PrivateRoute>
+                <DeleteAccountPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/balance"
+            element={
+              <PrivateRoute>
+                <BalancePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <PrivateRoute>
+                <NotificationsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <PrivateRoute>
+                <SettingsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/receive"
+            element={
+              <PrivateRoute>
+                <ReceivePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/send"
+            element={
+              <PrivateRoute>
+                <SendPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/transaction/:transactionId"
+            element={
+              <PrivateRoute>
+                <TransactionPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <PrivateRoute>
+                <UsersPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user-data"
+            element={
+              <PrivateRoute>
+                <UserDataPage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="*" Component={Error} />
+        </Routes>
+      </BrowserRouter>
+    <AuthProvider>
+  );
+}
+export default App;
+
+
+// Файл AuthContext
+import React, { createContext, useReducer, useEffect } from "react";
+import {
+  handleAddTransaction,
+  handleConfirmTransactionStatus,
+} from "./component/transactions";
+
+export const AuthContext = createContext();
+
+const initialState = {
+  token: null,
+  user: null,
+  isLoggedIn: false,
+  users: [...(JSON.parse(localStorage.getItem("users")) || []),
+  ],
+  transactions: JSON.parse(localStorage.getItem("transactions")) || [],
+  events: [],
+};
+
+const loadStateFromLocalStorage = () => {
+  const defaultState = {
+    token: null,
+    user: null,
+    isLoggedIn: false,
+    users: [...(JSON.parse(localStorage.getItem("users")) || []),
+    ], 
+    transactions: [],
+    events: [],
+    pendingTransactions: [], // add 17.06.24-22:44
+  };
+
+  try {
+    const storedState = JSON.parse(localStorage.getItem("authState")) || {};
+    const storedTransactions =
+      JSON.parse(localStorage.getItem("transactions")) || [];
+    const loadedState = {
+      ...defaultState,
+      ...storedState,
+      transactions: storedTransactions,
+      pendingTransactions: storedState.pendingTransactions || [], 
+    };
+    console.log("Loaded state from localStorage:", loadedState); 
+    return loadedState;
+  } catch (error) {
+    console.error("Error loading state from localStorage:", error);
+    
+  }
+  return initialState;
+};
+
+const saveStateToLocalStorage = (state) => {
+  try {
+    localStorage.setItem(
+      "authState",
+      JSON.stringify({
+        token: state.token,
+        user: state.user,
+        isLoggedIn: state.isLoggedIn,
+        users: state.users,
+        events: state.events,
+        pendingTransactions: state.pendingTransactions,
+      })
+    );
+    localStorage.setItem("transactions", JSON.stringify(state.transactions));
+    console.log("State saved to localStorage:", state);
+  } catch (error) {
+    console.error("Error saving state to localStorage:", error);
+  }
+};
+
+export const reducer = (state, action) => {
+  let newState;
+
+  console.log("Current State:", state); 
+  console.log("Action Received:", action); 
+
+  switch (action.type) {
+    case "LOGIN":
+      const loginEvent = {
+        title: "Вхід в акаунт",
+        info: `Вхід користувача ${
+          action.payload.user.email
+        } о ${new Date().toLocaleString()}`,
+        time: new Date(),
+        user: action.payload.user.email, 
+      };
+      newState = {
+        ...state,
+        token: action.payload.token,
+        user: action.payload.user,
+        isLoggedIn: true,
+        events: [...state.events, loginEvent],
+      };
+      break;
+
+    case "LOGOUT":
+      const logoutEvent = {
+        title: "Вихід з акаунту",
+        info: `Вихід користувача ${
+          state.user ? state.user.email : ""
+        } о ${new Date().toLocaleString()}`,
+        time: new Date(),
+        user: state.user ? state.user.email : "", 
+      };
+      newState = {
+        ...initialState,
+        users: state.users,
+        transactions: state.transactions,
+        pendingTransactions: state.pendingTransactions, 
+        events: [...state.events, logoutEvent],
+      };
+      console.log("Action LOGOUT:", action, "New State:", newState);
+      break;
+
+    case "REGISTER_USER": 
+      const newUser = {
+        
+        title: "Реєстрація користувача",
+        info: `Створений користувач ${
+          action.payload.newUser.email
+        } о ${new Date().toLocaleString()}`,
+        time: new Date(),
+        ...action.payload.newUser,
+        confirmed: action.payload.newUser.confirmed || false,
+        confirmationCode: action.payload.newUser.confirmationCode || "",
+        user: action.payload.newUser.email, 
+      };
+      
+      newState = {
+        ...state,
+        users: [...state.users, action.payload.newUser], 
+        events: [...state.events, newUser],
+      };
+      console.log("Action REGISTER_USER:", action, "New State:", newState);
+      break;
+
+    case "REMOVE_USER": // Додано DATE-04.06.24.
+      const removeEvent = {
+        title: "Видалення акаунту",
+        info: `Видалено користувача ${
+          state.user ? state.user.email : ""
+        } о ${new Date().toLocaleString()}`,
+        time: new Date(),
+        user: action.payload.email, 
+      };
+      newState = {
+        ...state,
+        users: state.users.filter(
+          (user) => user.email !== action.payload.email
+        ),
+        events: [...state.events, removeEvent],
+      };
+      console.log("Action REMOVE_USER:", action, "New State:", newState);
+      break;
+
+    case "UPDATE_USER_EMAIL":
+      const updateUserEmailEvent = {
+        title: "Зміна пошти",
+        info: `Змінено пошту користувача ${action.payload.oldEmail} на ${
+          action.payload.newEmail
+        } о ${new Date().toLocaleString()}`,
+        time: new Date(),
+        user: action.payload.newUser.oldEmail, 
+      };
+      newState = {
+        ...state,
+        users: state.users.map((user) =>
+          user.email === action.payload.oldEmail
+            ? { ...user, email: action.payload.newEmail }
+            : user
+        ),
+        events: [...state.events, updateUserEmailEvent],
+      };
+      console.log("Action UPDATE_USER_EMAIL:", action, "New State:", newState);
+      break;
+
+    
+    case "UPDATE_USER_PASSWORD":
+      const updateUserPasswordEvent = {
+        title: "Зміна пароля",
+        info: `Змінено пароль користувача ${state.user.email} на ${
+          action.payload.newPassword
+        } о ${new Date().toLocaleString()}`,
+        time: new Date(),
+        user: state.user.email, 
+      };
+      newState = {
+        ...state,
+        users: state.users.map((user) =>
+          user.email === action.payload.email
+            ? { ...user, password: action.payload.newPassword }
+            : user
+        ),
+        events: [...state.events, updateUserPasswordEvent],
+      };
+      console.log(
+        "Action UPDATE_USER_PASSWORD:",
+        action,
+        "New State:",
+        newState
+      );
+      break;
+
+    case "CONFIRM_USER":
+      newState = {
+        ...state,
+        users: state.users.map((user) =>
+          user.email === action.payload.email
+            ? { ...user, confirmed: true, confirmationCode: "" }
+            : user
+        ),
+      };
+      console.log("Action CONFIRM_USER:", action, "New State:", newState); 
+      break;
+
+    case "ADD_TRANSACTION":
+      newState = handleAddTransaction(state, action); 
+      break;
+
+    case "CONFIRM_TRANSACTION":
+      newState = handleConfirmTransactionStatus(state, action);
+      break;
+
+    case "CLEAR_TRANSACTIONS":
+      newState = {
+        ...state,
+        transactions: [],
+        pendingTransactions: [],
+      };
+      console.log(
+        "Action CLEAR_TRANSACTIONS: Cleared all transactions",
+        newState
+      ); 
+      break;
+
+    case "CLEAR_EVENTS": 
+      newState = {
+        ...state,
+        events: [],
+        combinedEvents: [],
+      };
+      console.log(
+        "Action CLEAR_EVENTS:",
+        action,
+        "Cleared all events",
+        newState
+      ); 
+      break;
+    case "CLEAR_USERS":
+      const adminUser = state.users.find((user) => user.isAdmin);
+      newState = {
+        ...state,
+        users: adminUser ? [adminUser] : [], 
+      };
+      console.log(
+        "Action CLEAR_USERS:",
+        action,
+        "Cleared all users except admin",
+        newState
+      );
+      break;
+
+    default:
+      newState = state;
+      console.log("Unhandled action type:", action);
+  }
+  saveStateToLocalStorage(newState);
+  console.log("New State after saving to localStorage:", newState);
+  return newState;
+};
+
+export const AuthProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(
+    reducer,
+    initialState,
+    loadStateFromLocalStorage
+  );
+
+  useEffect(() => {
+    saveStateToLocalStorage(state);
+    console.log("AuthProvider State: ", state); //change 15.06.24-19:00
+  }, [state]);
+
+  return (
+    <AuthContext.Provider value={{ ...state, dispatch }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export default AuthProvider;
+
+// Файл AuthActions
+export const userIdGenerator = (email) => {
+  const datePart = new Date().toISOString().replace(/\D/g, "");
+  const emailPart = email.replace(/[^a-zA-Z0-9]/g, "");
+  return `${emailPart}_${datePart}`;
+};
+
+export const generateTransactionId = () => {
+  return new Date().toISOString().replace(/\D/g, "");
+};
+
+export const generateConfirmationCode = () => {
+
+  return Math.random().toString(36).substring(2, 12);
+};
+
+export const registerUser = (email, password, dispatch) => {
+  const confirmationCode = generateConfirmationCode();
+
+  const newUser = {
+    id: userIdGenerator(email), 
+    email,
+    password,
+    confirmationCode,
+    confirmed: false,
+    isAdmin: email === "admin@admin",
+  };
+
+  dispatch({
+    type: "REGISTER_USER",
+    payload: {
+      newUser,
+    },
+  });
+
+  console.log(`AuthActions: Registered new user: ${email}`);
+  return {
+    success: true,
+    message: "User successfully registered.",
+    user: newUser,
+  };
+};
+
+export const confirmUser = (email, confirmationCode, users, dispatch) => {
+  const user = users.find(
+    (u) => u.email === email && u.confirmationCode === confirmationCode
+  );
+
+  if (user) {
+    dispatch({
+      type: "CONFIRM_USER",
+      payload: { email, confirmationCode },
+    });
+    console.log(`User ${email} confirmed successfully.`);
+    return { success: true, message: "User confirmed successfully." };
+  } else {
+    console.log(`Failed to confirm user ${email}.`);
+    return { success: false, message: "Invalid confirmation code." };
+  }
+};
+
+// add const updatePassword  15.06.24-11:52
+export const updatePassword = (email, newPassword, dispatch) => {
+  dispatch({
+    type: "UPDATE_USER_PASSWORD",
+    payload: { email, newPassword },
+  });
+  
+  console.log(`Пароль для ${email} оновлено успішно.`);
+  return { success: true, message: "Пароль оновлено успішно." };
+};
+
+export const deleteAccount = (user, email, dispatch, loggedInUser) => {
+  if (
+    loggedInUser.email !== email &&
+    !loggedInUser.isAdmin &&
+    email === user.email
+  ) {
+    console.log("No privilege to delete the account.");
+    return { success: false, message: "No privilege to delete the account." };
+  }
+
+  dispatch({
+    type: "REMOVE_USER",
+    payload: { email },
+  });
+
+  console.log(`Акаунт ${email} видалено.`);
+  return { success: true, message: "Акаунт успішно видалено." };
+};
+export const deleteUserAccount = (email, dispatch) => {
+  dispatch({
+    type: "REMOVE_USER",
+    payload: { email },
+  });
+
+  console.log(`Account for ${email} has been deleted.`);
+};
+
+export const confirmTransaction = (transactionId, dispatch) => {
+  dispatch({
+    type: "CONFIRM_TRANSACTION",
+    payload: { transactionId },
+  });
+  console.log(`Transaction ${transactionId} confirmed.`);
+  return {
+    success: true,
+    message: `Transaction ${transactionId} confirmed.`,
+  };
+};
+
+// Файл SettingsPage.js
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../AuthContext";
+import { Link } from "react-router-dom";
+
+export const SettingsPage = () => {
+  const navigate = useNavigate();
+  const { dispatch, user } = useContext(AuthContext);
+  const [emailErrorMsg, setEmailErrorMsg] = useState("");
+  const [passwordErrorMsg, setPasswordErrorMsg] = useState("");
+
+  const handleChangeEmail = (event) => {
+    event.preventDefault();
+
+    const { newEmail, password } = event.target.elements;
+
+    if (user && user.password === password.value) {
+      dispatch({
+        type: "UPDATE_USER_EMAIL",
+        payload: { oldEmail: user.email, newEmail: newEmail.value },
+      });
+      console.log("Email оновлено.");
+      setEmailErrorMsg("");
+    } else {
+      setEmailErrorMsg("Невірний поточний пароль");
+      console.log("Невірний поточний пароль");
+    }
+  };
+
+  const handleChangePassword = (event) => {
+    event.preventDefault();
+
+    const { newPassword, password } = event.target.elements;
+
+    if (user && user.password === password.value) {
+      dispatch({
+        type: "UPDATE_USER_PASSWORD",
+        payload: { email: user.email, newPassword: newPassword.value },
+      });
+      console.log("Пароль оновлено.");
+      setPasswordErrorMsg(""); 
+    } else {
+      setPasswordErrorMsg("Невірний поточний пароль");
+      console.log("Невірний поточний пароль");
+    }
+  };
+
+  const handleLogout = () => {
+    dispatch({ type: "LOGOUT" });
+    navigate("/");
+  };
+
+  if (user && user.email) {
+    console.log(`Поточний email користувача: ${user.email}`);
+  }
+
+  return (
+    <div className="default-container">
+      <h2>Ви увійшли як {user ? `${user.email}` : "Guest"}</h2>
+      <button onClick={() => navigate(-1)} className="nav_back-button">
+        Назад
+      </button>
+      <h2>Налаштування</h2>
+
+      <form onSubmit={handleChangeEmail}>
+        <div className="input_field-container">
+          <label htmlFor="newEmail" className="input_label">
+            Новий email
+          </label>
+          <input
+            id="newEmail"
+            className="input_field"
+            name="newEmail"
+            placeholder="Новий email"
+            required
+          />
+          <label htmlFor="password" className="input_label">
+            Поточний пароль
+          </label>
+          <input
+            className="input_field"
+            name="password"
+            type="password"
+            placeholder="Поточний пароль"
+            required
+          />
+          <div className="label-error">
+            {emailErrorMsg && <label>{emailErrorMsg}</label>}
+          </div>
+          <button type="submit" className="settings-button">
+            Зберегти Email
+          </button>
+        </div>
+      </form>
+
+      <form onSubmit={handleChangePassword}>
+        <div className="input_field-container">
+          <label htmlFor="newPassword" className="input_label">
+            Новий пароль
+          </label>
+          <input
+            className="input_field"
+            name="newPassword"
+            type="password"
+            placeholder="Новий пароль"
+            required
+          />
+          <label htmlFor="password" className="input_label">
+            Поточний пароль
+          </label>
+          <input
+            className="input_field"
+            name="password"
+            type="password"
+            placeholder="Поточний пароль"
+            required
+          />
+          <div className="label-error">
+            {passwordErrorMsg && <label>{passwordErrorMsg}</label>}
+          </div>
+          <button type="submit" className="settings-button">
+            Зберегти пароль
+          </button>
+        </div>
+      </form>
+
+      <div className="input_field-container">
+        <Link to="/delete-account" className="delete-button">
+          Видалити акаунт
+        </Link>
+        <button onClick={handleLogout} className="settings-button">
+          Вийти
+        </button>
+      </div>
+    </div>
+  );
+};
+export default SettingsPage;

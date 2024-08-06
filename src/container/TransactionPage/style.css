@@ -1,0 +1,27 @@
+/* Оновлені стилі для transaction-block */
+.transaction-table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.transaction-table p {
+  display: table-row;
+}
+
+.transaction-table span {
+  display: table-cell;
+  padding: 10px;
+  border: 1px solid #ddd;
+  height: auto;
+  /* Комірки будуть займати лише висоту контенту */
+}
+
+.transaction-table p:nth-of-type(even) {
+  background-color: #f2f2f2;
+}
+
+.transaction-table p:nth-of-type(odd) {
+  background-color: #fafafa;
+}

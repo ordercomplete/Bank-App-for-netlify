@@ -1,0 +1,36 @@
+/* File TitleComponent */
+.title-block {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.title-flex-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.title-left-column,
+.title-right-column {
+  flex: 1;
+  margin: 0 2em;
+  min-width: 24px;
+}
+
+.title-center-column {
+  text-align: center;
+  width: 100%;
+}
+
+.title-name-page {
+  margin: 30px 10px 10px;
+}
+
+.text-under-title {
+  color: gray;
+  display: inline;
+  text-align: center;
+}

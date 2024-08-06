@@ -1,0 +1,294 @@
+/* file index.css */
+@import url('./fonts/jost-fonts.css');
+
+:root {
+  --main-font: 'Jost', sans-serif;
+  --fallback-fonts: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  --background-color: rgb(172, 172, 172);
+  --main-color: #775CE6;
+  --error-color: red;
+  --transition: background-color 0.3s, opacity 0.3s;
+}
+
+html,
+body {
+  font-family: var(--main-font), var(--fallback-fonts);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  align-items: center;
+  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.jost-font-text {
+  font-family: var(--main-font);
+}
+
+.default-container,
+.default-container-auth {
+  font-family: var(--main-font);
+  color: black;
+  padding-top: 0;
+  background-color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: none;
+  width: 100%;
+  max-width: 393px;
+  height: 100%;
+  max-height: 765px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.default-container-auth {
+  background: #F5F5F7;
+}
+
+.default-container::-webkit-scrollbar,
+.default-container-auth::-webkit-scrollbar {
+  width: 1px;
+}
+
+form {
+  width: 100%;
+  height: 100%;
+}
+
+button,
+a {
+  font: inherit;
+  text-decoration: none;
+}
+
+label {
+  width: 90%;
+  text-align: left;
+}
+
+h1 {
+  font-size: 2.5em;
+}
+
+h2 {
+  font-size: 1.8em;
+}
+
+h3 {
+  font-size: 1.4em;
+}
+
+h4 {
+  font-size: 1.2em;
+}
+
+h5 {
+  font-size: 1em;
+}
+
+.input_field-container {
+  margin: 1em 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1vh;
+}
+
+.input_field {
+  color: black;
+  border: 1px solid var(--main-color);
+  border-radius: 12px;
+  padding: 16px;
+  background-color: white;
+  display: block;
+  width: 90%;
+  box-sizing: border-box;
+  font-size: 1em;
+}
+
+.input_field.error {
+  border-color: var(--error-color);
+}
+
+.input_field.error::placeholder {
+  color: var(--error-color);
+}
+
+.button-container-divider,
+.scroll-block::-webkit-scrollbar {
+  width: 1px;
+}
+
+.button-container-divider {
+  height: 2px;
+  background-color: rgb(197, 189, 189);
+  margin: 10px 0;
+}
+
+.button-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2vh;
+  margin: 5vh 0;
+}
+
+.copy-button {
+  padding: 5px 10px;
+  margin-top: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.copy-button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
+.continue-button,
+.register-button,
+.login-button,
+.settings-button,
+.delete-button {
+  width: 90%;
+  max-width: 353px;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 0 auto;
+  transition: var(--transition);
+}
+
+.continue-button,
+.register-button:active {
+  background: var(--main-color);
+  color: white;
+}
+
+.continue-button:active,
+.register-button:active {
+  background: #9278f0;
+}
+
+.delete-button {
+  background: white;
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+}
+
+.delete-button:hover {
+  background: var(--error-color);
+  color: white;
+}
+
+.settings-button {
+  background: white;
+  border: 1px solid var(--main-color);
+  color: var(--main-color);
+}
+
+.settings-button:hover {
+  background: var(--main-color);
+  color: white;
+}
+
+.continue-button:hover,
+.register-button:hover,
+.login-button:hover,
+.settings-button:hover,
+.delete-button:hover {
+  background: lightgrey;
+  opacity: 0.7;
+}
+
+.password-input {
+  position: relative;
+}
+
+input[type="password"] {
+  padding-right: 36px;
+}
+
+.password-visibility-button {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.password-visibility-button.active {
+  color: #007bff;
+}
+
+.UsersBlockSpace {
+  height: 60px;
+  width: 100%;
+  bottom: 0;
+}
+
+.transaction-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+
+.scroll-block {
+  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.payment-methods {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.payment-methods label {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.payment-methods input[type="radio"] {
+  margin-right: 10px;
+}
+
+.payment-description {
+  padding: 20px;
+  font-size: 15px;
+  color: #555;
+  text-align: justify;
+  width: 100%;
+  max-width: 300px;
+  margin: 20px auto;
+  line-height: 1.5;
+}

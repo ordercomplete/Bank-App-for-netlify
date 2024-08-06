@@ -1,0 +1,103 @@
+/* Файл UsersPage.css */
+
+.user-data-list {
+  width: 90%;
+  padding: 0;
+  /* margin: 10px; */
+  height: 650px;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-data-list::after {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  pointer-events: none;
+  overflow-x: hidden;
+}
+
+.user-data-list:hover {
+  overflow-y: auto;
+}
+
+.user-data-list::-webkit-scrollbar {
+  width: 1px;
+}
+
+.user-data-list::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  border-radius: 10px;
+}
+
+.user-data-list::-webkit-scrollbar-track {
+  background: #e1e1e1;
+}
+
+.user-data-item {
+  width: 100%;
+  /* min-width: 353px; */
+  border: 1px solid #ccc;
+  padding: 5px;
+  /* margin-bottom: 10px; */
+  background: #fff;
+  display: flex;
+
+}
+
+.user-data {
+  margin: 5px;
+  text-align: start;
+  width: 47%;
+}
+
+.user-actions {
+  margin: 0 5px;
+  width: 47%;
+}
+
+.user-transactions-button,
+.user-delete-button,
+.user-notifications-button {
+  width: 100%;
+  display: block;
+  margin: 5px;
+  color: #fff;
+  background: none;
+  border: 1px solid;
+  padding: 5px;
+  font-size: 0.9em;
+  cursor: pointer;
+  text-align: center;
+}
+
+.user-transactions-button {
+  color: #007bff;
+  border-color: #007bff;
+}
+
+.user-delete-button {
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+/* .user-delete-button:hover {
+  background: #cacaca;
+} */
+
+.user-notifications-button {
+  color: #72b472;
+  border-color: #72b472;
+}
+
+.user-transactions-button:hover,
+.user-delete-button:hover,
+.user-notifications-button:hover {
+  background: #cacaca;
+}

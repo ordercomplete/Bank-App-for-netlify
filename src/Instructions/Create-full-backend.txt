@@ -1,0 +1,157 @@
+У нас є вже повністю працюючій додаток на React. Він розгорнутий через Гіт на heroku.com. Але віддалені користувачі можуть створювати акаунти тільки у себе на мобільних пристроях і не можуть взаємодіяти між собою на різних пристроях. Як це виправити?
+
+план:
+Запит : вам потрібно ввімкнути створення облікового запису та взаємодію з кількох пристроїв.
+Рішення : використовуйте серверну службу для зберігання даних користувача та керування автентифікацією.
+Щоб реалізувати це, виконайте такі дії:
+
+Крок 1. Налаштуйте серверну службу
+Використовуйте Express.js для налаштування серверної частини.
+Використовуйте базу даних (наприклад, MongoDB) для постійного зберігання даних користувача.
+Крок 2: Створіть кінцеві точки автентифікації користувача
+Приклад для Backend (Node.js + Express + MongoDB)
+Виконайте ці команди, щоб налаштувати серверну частину :
+bash (удар)
+
+mkdir backend
+cd backend
+npm init -y
+npm install express mongoose bcryptjs jsonwebtoken cors dotenv
+
+створити server.js :
+js
+
+// server.js
+
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const cors = require("cors");
+
+dotenv.config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => {
+  console.log("Connected to the database");
+}).catch(err => {
+  console.error("Database connection error:", err);
+});
+
+app.use("/api/auth", require("./routes/auth"));
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+створитиmodels/User.js :
+js
+
+// models/User.js
+
+const mongoose = require("mongoose");
+
+const UserSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  confirmed: { type: Boolean, default: false },
+  confirmationCode: { type: String },
+  isAdmin: { type: Boolean, default: false },
+});
+
+module.exports = mongoose.model("User", UserSchema);
+створитиroutes/auth.js :
+js
+
+// routes/auth.js
+
+const express = require("express");
+const { registerUser, confirmUser, loginUser, updatePassword, deleteUser } = require("../controllers/authController");
+
+const router = express.Router();
+
+router.post("/register", registerUser);
+router.post("/confirm", confirmUser);
+router.post("/login", loginUser);
+router.post("/update-password", updatePassword);
+router.delete("/delete-account", deleteUser);
+
+module.exports = router;
+створитиcontrollers/authController.js :
+js
+
+// controllers/authController.js
+
+const User = require("../models/User");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
+// Helper functions and controller logic for register, confirm, login, update-password, and delete-account
+
+const generateConfirmationCode = () => {
+  return Math.random().toString(36).substring(2, 12);
+};
+
+exports.registerUser = async (req, res) => {
+  // Register user logic
+};
+
+exports.confirmUser = async (req, res) => {
+  // Confirm user logic
+};
+
+exports.loginUser = async (req, res) => {
+  // Login user logic
+};
+
+exports.updatePassword = async (req, res) => {
+  // Update password logic
+};
+
+exports.deleteUser = async (req, res) => {
+  // Delete user logic
+};
+Крок 3: Змініть код інтерфейсу
+Змініть registerUserдля взаємодії з серверною частиною :
+js
+
+// In AuthActions.js
+
+export const registerUser = async (email, password, dispatch) => {
+  try {
+    const response = await fetch("http://localhost:5000/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      dispatch({
+        type: "REGISTER_USER",
+        payload: {
+          newUser: data.user,
+        },
+      });
+      return { success: true, message: "User successfully registered.", user: data.user };
+    } else {
+      return { success: false, message: data.message };
+    }
+  } catch (error) {
+    console.error("Error registering user:", error);
+    return { success: false, message: error.message };
+  }
+};
+Оновіть логін, підтвердіть та інші дії аналогічно .
+Крок 4: Тестування
+Переконайтеся, що ваш внутрішній сервер працює.
+Оновіть інтерфейс React, щоб надсилати запити на сервер.
+Перевірте реєстрацію користувача з кількох пристроїв, щоб підтвердити взаємодію між пристроями.
+Будь ласка, підтвердьте кожен крок, як ви розумієте, щоб продовжити.

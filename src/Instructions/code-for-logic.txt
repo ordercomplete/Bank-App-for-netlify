@@ -1,0 +1,588 @@
+// Файл SendPage
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../AuthContext";
+import { generateTransactionId, cancelTransaction } from "../../AuthActions"; // тут додайте cancelTransaction
+import { Link } from "react-router-dom";
+import TitleComponent from "../../component/TitleComponent";
+import UsersBlock from "../../component/UsersBlock";
+
+const startTimer = (transactionId, dispatch) => {
+  const timeoutHandle = setTimeout(() => {
+    cancelTransaction(transactionId, dispatch);
+  }, 15 * 60 * 1000); // 15 minutes in milliseconds
+
+  // Store timeout handle to be cleared on successful transaction
+  dispatch({
+    type: "STORE_TIMEOUT_HANDLE",
+    payload: { transactionId, timeoutHandle },
+  });
+};
+
+export const SendPage = () => {
+  const [email, setEmail] = useState("");
+  const [amount, setAmount] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("Western Union");
+  const [isSending, setIsSending] = useState(false);
+  const { user, users, dispatch } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleSend = async (event) => {
+    event.preventDefault();
+
+    console.log("Handling send..."); // Log send attempt, add DATE-12.06.24
+
+    if (isSending) return;
+    setIsSending(true);
+
+    if (!email || email === user.email) {
+      alert("Недопустимий email одержувача.");
+      setIsSending(false);
+      return;
+    }
+
+    const recipient = users.find((u) => u.email === email);
+    if (!recipient) {
+      alert("Email одержувача не знайдено в системі.");
+      setIsSending(false);
+      return;
+    }
+
+    const transaction = {
+      transactionId: generateTransactionId(),
+      time: new Date().toISOString(),
+      amount: parseFloat(amount),
+      from: user.email,
+      to: email,
+      type: "send",
+      paymentMethod,
+      isPending: paymentMethod === "Western Union", // Add pending for Western Union
+    };
+
+    console.log("Спроба відправити транзакцію:", transaction);
+
+    dispatch({
+      type: "ADD_TRANSACTION",
+      payload: transaction,
+    });
+
+    // Запустіть таймер для скасування транзакції через 15 хвилин
+    if (paymentMethod === "Western Union") {
+      startTimer(transaction.transactionId, dispatch);
+    }
+
+    if (paymentMethod === "Money Gram") {
+      dispatch({
+        type: "ADD_TRANSACTION",
+        payload: {
+          ...transaction,
+          type: "receive",
+          from: user.email,
+          to: email,
+          isPending: false,
+        },
+      });
+    }
+
+    console.log("Dispatched SEND transaction:", transaction);
+
+    navigate("/balance");
+    setIsSending(false);
+  };
+
+  const paymentDescriptions = {
+    "Western Union":
+      "Переказ коштів з підтвердженням отримання. Якщо транзакція не буде підтверджена протягом 15 хвилин, то вона автоматично скасовується. Не передавайте ID транзакції нікому, крім отримувача цієї транзакції.",
+    "Money Gram":
+      "Звичайний переказ коштів. Після звершення транзакції кошти відразу поступлять на рахунок отримувача.",
+  };
+  const pageTitle = "Відправити кошти"; // передати  заголовок
+
+  return (
+    <div className="default-container-auth">
+      <TitleComponent pageTitle={pageTitle} />
+      <form onSubmit={handleSend}>
+        <div className="input_field-container">
+          <input
+            className="input_field"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email одержувача"
+            required
+          />
+          <input
+            className="input_field"
+            type="number"
+            step="0.01"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="Сума"
+            required
+          />
+          <div className="payment-methods">
+            {["Western Union", "Money Gram"].map((method) => (
+              <label key={method}>
+                <input
+                  type="radio"
+                  value={method}
+                  checked={paymentMethod === method}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />{" "}
+                {method}
+              </label>
+            ))}
+          </div>
+        </div>
+        <button type="submit" className="continue-button">
+          Відправити
+        </button>
+        <div className="payment-description">
+          {paymentDescriptions[paymentMethod]}
+        </div>
+      </form>
+      <div className="UsersBlockSpace">
+        <UsersBlock user={user} />
+      </div>
+    </div>
+  );
+};
+
+export default SendPage;
+
+// Файл ReceivePage Date 08.06.24 version-3
+import React, { useState, useContext } from "react";
+import {
+  generateTransactionId,
+  // updateTransactionStatus,
+  confirmTransaction,
+  cancelTransaction,
+} from "../../AuthActions";
+import { AuthContext } from "../../AuthContext";
+import { useNavigate } from "react-router-dom";
+// import { Link } from "react-router-dom";
+import TitleComponent from "../../component/TitleComponent";
+import UsersBlock from "../../component/UsersBlock";
+import Timer from "../../component/Timer";
+
+const ReceivePage = () => {
+  const [email, setEmail] = useState("");
+  const [amount, setAmount] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("Western Union");
+  const [isReceiving, setIsReceiving] = useState(false);
+  const [transactions, setTransactions] = useState([]);
+  const { user, users, dispatch } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [transactionId, setTransactionId] = useState("");
+
+  const handleReceive = async (event) => {
+    event.preventDefault();
+
+    console.log("Handling receive...", transactions); // Log receive attempt
+
+    if (isReceiving) return;
+    setIsReceiving(true);
+
+    if (!email || email === user.email) {
+      alert("Недопустиме ім'я відправника");
+      setIsReceiving(false);
+      return;
+    }
+
+    const sender = users.find((u) => u.email === email);
+    if (!sender) {
+      alert("Sender email not found in the database.");
+      setIsReceiving(false);
+      return;
+    }
+
+    const transactionAmount = parseFloat(amount);
+
+    const correspondingSendTransaction = transactions.find(
+      (tran) =>
+        tran.transactionId === transactionId &&
+        tran.from === email &&
+        tran.to === user.email &&
+        tran.amount === transactionAmount &&
+        tran.paymentMethod === paymentMethod &&
+        tran.type === "send"
+    );
+
+    if (
+      !correspondingSendTransaction ||
+      !correspondingSendTransaction.isPending //add 17.06.24-12:03
+    ) {
+      alert("No corresponding send transaction found.");
+      setIsReceiving(false);
+      return;
+    }
+
+    // Confirm the transaction
+    confirmTransaction(correspondingSendTransaction.transactionId, dispatch);
+
+    const transaction = {
+      transactionId: generateTransactionId(),
+      time: new Date().toISOString(),
+      amount: transactionAmount,
+      from: email,
+      to: user.email,
+      type: "receive",
+      paymentMethod,
+      isPending: false, //add DATE-10.06.24. version-1
+    };
+
+    console.log("Attempting to receive transaction:", transaction);
+
+    dispatch({
+      type: "ADD_TRANSACTION",
+      payload: transaction,
+    });
+
+    dispatch({
+      type: "ADD_EVENT",
+      payload: {
+        title: "Receive Money",
+        info: `Отримання $${transaction.amount} від ${transaction.paymentMethod} через ${transaction.paymentMethod} о ${transaction.time}`,
+      },
+    });
+
+    console.log("Dispatched RECEIVE transaction:", transaction);
+
+    // const newTransaction = {
+    //   id: generateTransactionId(),
+    //   sender: transaction.sender,
+    //   amount: transaction.amount,
+    //   paymentMethod: transaction.paymentMethod,
+    //   time: transaction.time,
+    // };
+
+    // setTransactions((prevTransactions) => [
+    //   ...prevTransactions,
+    //   newTransaction,
+    // ]);
+
+    // dispatch({
+    //   type: "ADD_TRANSACTION",
+    //   payload: newTransaction,
+    // });
+
+    // dispatch({
+    //   type: "ADD_EVENT",
+    //   payload: {
+    //     title: "Receive Money",
+    //     info: `Отримання $${newTransaction.amount} від ${newTransaction.sender} через ${newTransaction.paymentMethod} о ${newTransaction.time}`,
+    //   },
+    // });
+
+    // console.log("Dispatched RECEIVE transaction:", newTransaction);
+
+    navigate("/balance");
+    setIsReceiving(false);
+  };
+
+  const cancelTransaction = (transactionId) => {
+    setTransactions((prevTransactions) =>
+      prevTransactions.map((transaction) =>
+        transaction.id === transactionId
+          ? { ...transaction, status: "cancelled" }
+          : transaction
+      )
+    );
+
+    dispatch({
+      type: "ADD_TRANSACTION",
+      payload: {
+        id: generateTransactionId(),
+        sender: "System",
+        amount: 0,
+        paymentMethod: "Cancelled",
+        time: new Date().toLocaleString(),
+        status: "cancelled",
+        cancelledTransactionId: transactionId,
+      },
+    });
+
+    dispatch({
+      type: "ADD_EVENT",
+      payload: {
+        title: "Cancelled Transaction",
+        info: `Транзакція #${transactionId} була скасована.`,
+      },
+    });
+  };
+
+  const paymentDescriptions = {
+    "Western Union":
+      "Переказ коштів з підтвердженням отримання. Якщо транзакція не буде підтверджена протягом 15 хвилин, то вона автоматично скасовується.",
+    "Money Gram":
+      "Звичайний переказ коштів. Після звершення транзакції кошти відразу поступлять на рахунок отримувача. Наразі отримати кошти можна тільки за допомогою платіжного метода Western Union",
+  };
+
+  const pageTitle = "Отримати кошти"; // передати  заголовок
+
+  return (
+    <div className="default-container-auth">
+      <TitleComponent pageTitle={pageTitle} />
+      <form onSubmit={handleReceive}>
+        <div className="input_field-container">
+          <input
+            className="input_field"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email відправника"
+            required
+          />
+          <input
+            className="input_field"
+            type="number"
+            step="0.01"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="Вкажіть суму"
+            required
+          />
+          <input
+            className="input_field"
+            type="text"
+            value={transactionId}
+            onChange={(e) => setTransactionId(e.target.value)}
+            placeholder="ID транзакції"
+            required
+          />
+          <div className="payment-methods">
+            {["Western Union", "Money Gram"].map((method) => (
+              <label key={method}>
+                <input
+                  type="radio"
+                  value={method}
+                  checked={paymentMethod === method}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                {method}
+              </label>
+            ))}
+          </div>
+        </div>
+        {/* <Timer
+          transactionId={transactionId}
+          onTimerExpired={cancelTransaction}
+        /> */}
+        <Timer
+          transactionId={transactionId}
+          transactions={transactions}
+          onTimerExpired={cancelTransaction}
+        />
+        <button type="submit" className="continue-button">
+          Одержати
+        </button>
+        <div className="payment-description">
+          {paymentDescriptions[paymentMethod]}
+        </div>
+      </form>
+      <div className="UsersBlockSpace">
+        <UsersBlock user={user} />
+      </div>
+    </div>
+  );
+};
+
+export default ReceivePage;
+
+// Timer.js
+import React, { useEffect, useState } from "react";
+
+const Timer = ({ transactions, onTimerExpired }) => {
+  const [timeRemainingByTransactionId, setTimeRemainingByTransactionId] =
+    useState({});
+
+  useEffect(() => {
+    const newTimeRemainingByTransactionId = {};
+    transactions.forEach((transaction) => {
+      if (transaction.isPending) {
+        newTimeRemainingByTransactionId[transaction.transactionId] = 15 * 60; // 15 minutes in seconds
+      }
+    });
+    setTimeRemainingByTransactionId(newTimeRemainingByTransactionId);
+  }, [transactions]); // Setup the initial state when transactions change
+
+  useEffect(() => {
+    const intervals = {};
+    Object.keys(timeRemainingByTransactionId).forEach((transactionId) => {
+      intervals[transactionId] = setInterval(() => {
+        setTimeRemainingByTransactionId((prevTimeRemaining) => {
+          const newTimeRemaining = { ...prevTimeRemaining };
+          newTimeRemaining[transactionId] = newTimeRemaining[transactionId] - 1;
+
+          if (newTimeRemaining[transactionId] <= 0) {
+            clearInterval(intervals[transactionId]);
+            onTimerExpired(transactionId);
+            delete newTimeRemaining[transactionId]; // Remove expired timer
+          }
+
+          return newTimeRemaining;
+        });
+      }, 1000);
+    });
+
+    return () => {
+      Object.values(intervals).forEach((interval) => clearInterval(interval));
+    };
+  }, [timeRemainingByTransactionId, onTimerExpired]); // Setup intervals when state changes
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  return (
+    <div className="timer">
+      <h3>Час, що залишився до підтвердження:</h3>
+      {Object.keys(timeRemainingByTransactionId).map((transactionId) => (
+        <div key={transactionId} className="timer-item">
+          <span>Транзакція #{transactionId}:</span>
+          <span>{formatTime(timeRemainingByTransactionId[transactionId])}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default Timer;
+
+// Файл transactions.js (компонент)
+export const handleAddTransaction = (state, action) => {
+  const transaction = action.payload;
+  let newState = {
+    ...state,
+    transactions: [...state.transactions, transaction],
+    users: state.users.map((user) => {
+      if (user.email === transaction.from) {
+        return { ...user, balance: user.balance - transaction.amount };
+      }
+      if (
+        transaction.paymentMethod === "Money Gram" &&
+        user.email === transaction.to
+      ) {
+        return { ...user, balance: user.balance + transaction.amount };
+      }
+      return user;
+    }),
+    pendingTransactions: state.pendingTransactions || [],
+  };
+
+  if (transaction.paymentMethod === "Western Union") {
+    newState.pendingTransactions = [
+      ...(newState.pendingTransactions || []),
+      transaction.transactionId,
+    ];
+  }
+
+  console.log("Action ADD_TRANSACTION:", action, "New State:", newState);
+  return newState;
+};
+
+export const handleConfirmTransactionStatus = (state, action) => {
+  const { transactionId } = action.payload;
+  let newState = {
+    ...state,
+    transactions: state.transactions.map((t) =>
+      t.transactionId === transactionId ? { ...t, isPending: false } : t
+    ),
+    users: state.users.map((user) => {
+      const pendingTransaction = state.transactions.find(
+        (t) => t.transactionId === transactionId
+      );
+
+      if (user.email === pendingTransaction.to) {
+        return {
+          ...user,
+          balance: user.balance + pendingTransaction.amount,
+        };
+      }
+      return user;
+    }),
+    pendingTransactions: (state.pendingTransactions || []).filter(
+      (id) => id !== transactionId
+    ),
+  };
+
+  // Remove the timeout handle if it exists //add 25.07.24
+  if (state.timeoutHandles && state.timeoutHandles[transactionId]) {
+    clearTimeout(state.timeoutHandles[transactionId]);
+    delete state.timeoutHandles[transactionId];
+  }
+
+  console.log("Action CONFIRM_TRANSACTION:", action, "New State:", newState);
+  return newState;
+};
+
+//Додано таймер 15 хвилин
+export const handleCancelTransaction = (state, action) => {
+  const { transactionId } = action.payload;
+  let newState = {
+    ...state,
+    transactions: state.transactions.map((t) =>
+      t.transactionId === transactionId
+        ? { ...t, isPending: false, isCanceled: true }
+        : t
+    ),
+    users: state.users.map((user) => {
+      const canceledTransaction = state.transactions.find(
+        (t) => t.transactionId === transactionId
+      );
+
+      if (user.email === canceledTransaction.from) {
+        return {
+          ...user,
+          balance: user.balance + canceledTransaction.amount,
+        };
+      }
+      return user;
+    }),
+    pendingTransactions: (state.pendingTransactions || []).filter(
+      (id) => id !== transactionId
+    ),
+  };
+
+  console.log("Action CANCEL_TRANSACTION:", action, "New State:", newState);
+  return newState;
+};
+
+// Handle action for storing timeout handles
+export const handleStoreTimeoutHandle = (state, action) => {
+  const { transactionId, timeoutHandle } = action.payload;
+
+  const newState = {
+    ...state,
+    timeoutHandles: {
+      ...state.timeoutHandles,
+      [transactionId]: timeoutHandle,
+    },
+  };
+
+  console.log("Action STORE_TIMEOUT_HANDLE:", action, "New State:", newState);
+  return newState;
+};
+
+// Handle action for clearing timeout handles
+export const handleClearTimeoutHandle = (state, action) => {
+  const { transactionId } = action.payload;
+
+  if (state.timeoutHandles && state.timeoutHandles[transactionId]) {
+    clearTimeout(state.timeoutHandles[transactionId]);
+    delete state.timeoutHandles[transactionId];
+  }
+
+  const newState = {
+    ...state,
+    timeoutHandles: { ...state.timeoutHandles },
+  };
+
+  console.log("Action CLEAR_TIMEOUT_HANDLE:", action, "New State:", newState);
+  return newState;
+};
+

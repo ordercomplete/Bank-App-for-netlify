@@ -1,0 +1,34 @@
+/* file UsersBlock.css */
+.users-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+  margin: 10px 0;
+  padding: 0 20px;
+  /* background: rgb(100, 225, 221);
+  background: linear-gradient(90deg, rgba(100, 225, 221, 1) 0%, rgba(80, 111, 199, 1) 76%, rgba(87, 90, 200, 1) 100%);
+  ; */
+  /* background: #5734E0; */
+}
+
+/* Центруємо блок для non-admin користувачів */
+.users-block.non-admin {
+  justify-content: center;
+}
+
+.users-icon-link {
+  color: black;
+  margin: 10px;
+}
+
+.current-user {
+  margin: 0 10px;
+}
+
+.icon-enter {
+  width: 24px;
+  height: 24px;
+
+}

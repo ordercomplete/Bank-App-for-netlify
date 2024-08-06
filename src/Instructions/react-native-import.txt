@@ -1,0 +1,81 @@
+Для того, щоб у проекті React можна було використовувати імпорт import { StatusBar } from 'react-native', необхідно виконати наступні кроки:
+
+Встановити react-native-web: React-native-web дозволяє використовувати компоненти та API React Native у веб-додатках, побудованих на React.
+
+text
+
+npm install react-native-web
+Налаштувати Webpack: Необхідно налаштувати Webpack, щоб він міг обробляти файли, імпортовані з react-native-web.
+
+У вашому webpack.config.js файлі додайте наступні правила:
+
+javascript
+
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules\/(?!(react-native-web|@expo|expo|@unimodules)\/).*/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+            plugins: ['react-native-web']
+          }
+        }
+      },
+      // ...
+    ]
+  }
+}
+Налаштувати Babel: Додайте плагін react-native-web до вашої конфігурації Babel.
+
+У файлі .babelrc або babel.config.js додайте:
+
+json
+
+{
+  "presets": ["@babel/preset-env", "@babel/preset-react"],
+  "plugins": ["react-native-web"]
+}
+Імпортувати та використовувати StatusBar: Тепер ви можете імпортувати та використовувати StatusBar компонент у своєму React додатку:
+
+javascript
+
+import { StatusBar } from 'react-native';
+
+// Використання StatusBar
+<StatusBar backgroundColor="blue" barStyle="light-content" />
+Після виконання цих кроків ви зможете використовувати StatusBar та інші компоненти та API з react-native-web у своєму React додатку. Це дозволить вам створювати крос-платформні додатки, які працюють як на веб, так і на мобільних пристроях.
+
+Зверніть увагу, що деякі функції, специфічні для мобільних платформ, можуть не працювати або мати обмежену функціональність у веб-версії вашого додатку.
+
+Переконайтеся, що ви також встановили пакет babel-eslint як залежність вашого проекту:
+npm install --save-dev babel-eslint
+
+Перевірте встановлення пакета: Переконайтеся, що ви дійсно встановили babel-eslint у ваш проект. Ви можете перевірити це, виконавши наступну команду:
+npm list babel-eslint
+
+Якщо пакет не встановлено, встановіть його за допомогою npm або yarn:
+npm install --save-dev babel-eslint
+
+Додати у package.json
+{
+  "name": "your-project",
+  "version": "0.1.0",
+  "dependencies": {
+    // ...
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+/* Файл PasswordInput */
+
+.password-input-container {
+  position: relative;
+  width: 90%;
+}
+
+.password-input-container input {
+  width: 100%;
+}
+
+.password-visibility-button {
+  position: absolute;
+  top: 50%;
+  right: 5%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  color: #000;
+  z-index: 10;
+}
+
+.password-visibility-button.active {
+  color: #007bff;
+}
+
+.input_field.error {
+  border-color: red;
+}
+
+.input_field.error::placeholder {
+  color: red;
+}
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-password-eye,
+input[type="password"]::-moz-password-eye,
+input[type="password"]::-webkit-input-decoration,
+input[type="password"]::-webkit-textfield-decorator,
+input[type="password"]::-internal-decorator {
+  display: none;
+}

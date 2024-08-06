@@ -1,0 +1,142 @@
+/* file WellcomePage.css */
+
+.welcome-container {
+  font-family: 'Jost';
+  color: rgb(240, 224, 224);
+  background-color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-width: 393px;
+  height: 100%;
+  max-height: 765px;
+  border: none;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.welcome-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('../../../public/png/bitcoin-bank.png') no-repeat center center;
+  background-size: cover;
+  opacity: 0.3;
+  z-index: 1;
+}
+
+.wellcome-icons-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2em 0 0 2em;
+}
+
+.welcome-background-container {
+  position: relative;
+  width: 100%;
+  height: 60vh;
+  border-bottom-left-radius: 32px;
+  border-bottom-right-radius: 32px;
+  overflow: hidden;
+}
+
+.welcome-background-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('../../../public/png/background-1.png') no-repeat center center;
+  background-size: cover;
+  opacity: 0.7;
+  z-index: 1;
+}
+
+.welcome-settings-icon-link {
+  z-index: 3;
+}
+
+.welcome-heading-block {
+  display: flex;
+  flex-direction: column;
+  padding: 10vh 10px;
+  gap: 2vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.marquee {
+  display: inline-block;
+  padding-left: 100%;
+  animation: marquee 10s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.hello-text,
+.welcome-text {
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+  z-index: 3;
+  text-align: center;
+}
+
+.hello-text {
+  padding: 2dvb 0;
+  font-size: 3em;
+}
+
+.welcome-text-ticker {
+  margin: 3vh 0.1em;
+  box-sizing: border-box;
+  z-index: 3;
+}
+
+.wellcome-button-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2vh;
+  margin: 10vh 0 5vh;
+}
+
+.login-button,
+.register-button {
+  width: 90%;
+  max-width: 353px;
+  padding: 20px;
+  border-radius: 12px;
+  text-decoration: none;
+  margin: 0 auto;
+  z-index: 2;
+}
+
+.register-button {
+  background: #775CE6;
+  color: white;
+  opacity: 0.7;
+}
+
+.login-button {
+  border: 1px solid #775CE6;
+}
