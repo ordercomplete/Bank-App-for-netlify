@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import PasswordInput from "../../component/PasswordInput";
 import TitleComponent from "../../component/TitleComponent";
 import "./style.css";
+import StatusBarColorChanger2 from "../../modul/StatusBarColorChanger2";
 
 export const SignupPage = () => {
   const [email, setEmail] = useState("");
@@ -101,6 +102,10 @@ export const SignupPage = () => {
 
   return (
     <div className="default-container">
+      <StatusBarColorChanger2
+        color="#ffffff"
+        targetClassName="default-container"
+      />
       {/* title ідентичний для всіх сторінок */}
       <TitleComponent pageTitle={pageTitle} textUnderTitle={textUnderTitle} />
       <form onSubmit={handleSignup}>
