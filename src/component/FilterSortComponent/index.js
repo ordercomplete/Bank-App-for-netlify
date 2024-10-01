@@ -1,11 +1,14 @@
-// Файл FilterSortComponent.js
+// Файл src/component/FilterSortComponent.js
 import React, { useEffect, useState } from "react";
 import arrowDownIcon from "../../IconsSvg/arrow-down.svg";
 
 const FilterSortComponent = ({
   transactions,
-  setFilteredAndSortedTransactions,
+  // filteredAndSortedTransactions,
+  // setFilteredAndSortedTransactions,
 }) => {
+  const [filteredAndSortedTransactions, setFilteredAndSortedTransactions] =
+    useState([]);
   const [sortBy, setSortBy] = useState("timeNew");
   const [filterBy, setFilterBy] = useState("all");
   const [timePeriod, setTimePeriod] = useState("all");
@@ -65,19 +68,40 @@ const FilterSortComponent = ({
     }
   };
 
+  // useEffect(() => {
+  //   let filteredTransactions = getFilteredTransactions(transactions, filterBy);
+  //   filteredTransactions = getTransactionsByTimePeriod(
+  //     filteredTransactions,
+  //     timePeriod
+  //   );
+  //   const sortedAndFilteredTransactions = getSortedTransactions(
+  //     filteredTransactions,
+  //     sortBy
+  //   );
+  //   setFilteredAndSortedTransactions(sortedAndFilteredTransactions);
+  // }, [transactions, sortBy, filterBy, timePeriod]);
   useEffect(() => {
-    let filteredTransactions = getFilteredTransactions(transactions, filterBy);
-    filteredTransactions = getTransactionsByTimePeriod(
-      filteredTransactions,
-      timePeriod
-    );
     const sortedAndFilteredTransactions = getSortedTransactions(
-      filteredTransactions,
+      getTransactionsByTimePeriod(
+        getFilteredTransactions(transactions, filterBy),
+        timePeriod
+      ),
       sortBy
     );
-    setFilteredAndSortedTransactions(sortedAndFilteredTransactions);
-  }, [transactions, sortBy, filterBy, timePeriod]);
 
+    if (
+      JSON.stringify(sortedAndFilteredTransactions) !==
+      JSON.stringify(filteredAndSortedTransactions)
+    ) {
+      setFilteredAndSortedTransactions(sortedAndFilteredTransactions);
+    }
+  }, [
+    transactions,
+    sortBy,
+    filterBy,
+    timePeriod,
+    filteredAndSortedTransactions,
+  ]);
   return (
     <div className="filter-container">
       <div className="sort-by">

@@ -71,7 +71,7 @@ js
 // routes/auth.js
 
 const express = require("express");
-const { registerUser, confirmUser, loginUser, updatePassword, deleteUser } = require("../controllers/authController");
+const { registerUser, confirmUser, loginUser, updatePassword, deleteUser } = require("../controllers/AuthController");
 
 const router = express.Router();
 
@@ -82,10 +82,10 @@ router.post("/update-password", updatePassword);
 router.delete("/delete-account", deleteUser);
 
 module.exports = router;
-створитиcontrollers/authController.js :
+створитиcontrollers/AuthController.js :
 js
 
-// controllers/authController.js
+// controllers/AuthController.js
 
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");

@@ -1,4 +1,4 @@
-//Файл render
+//Файл render index.js
 
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
@@ -31,8 +31,8 @@ root.render(
       targetClassName="default-container-auth"
     />
     <App />
-  </StrictMode>,
-  document.getElementById("root")
+  </StrictMode>
+  // document.getElementById("root")
 );
 
 // У цьому прикладі ми створили масив statusBarConfig, який містить об'єкти з необхідними конфігураціями для StatusBarColorChanger. Потім ми використовуємо метод map(), щоб створити масив компонентів StatusBarColorChanger на основі цього конфігураційного масиву. Це дозволяє нам скоротити код і зробити його більш читабельним.

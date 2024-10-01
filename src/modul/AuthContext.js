@@ -1,8 +1,9 @@
-// Файл AuthContext
+// Файл src/modul/AuthContext
 // Цей файл відповідає за контекст аутентифікації в додатку. Він зберігає та керує станом аутентифікації користувачів.
 
 import React, { createContext, useReducer, useEffect, useState } from "react";
 // Імпорт бібліотек React, createContext, useReducer та useEffect.
+import { fetchUsers, createUser } from "../api.js";
 
 import {
   // handleAddTransaction,
@@ -20,10 +21,11 @@ const initialState = {
   isLoggedIn: false,
   users: [...(JSON.parse(localStorage.getItem("users")) || [])],
   // Ініціалізуємо масив користувачів з localStorage, або пустий масив, якщо даних нема.
-  transactions: JSON.parse(localStorage.getItem("transactions")) || [],
+  // transactions: JSON.parse(localStorage.getItem("transactions")) || [],
+  transactions: JSON.parse(localStorage.getItem("transactions") || "[]"),
   // Ініціалізуємо масив транзакцій з localStorage, або пустий масив, якщо даних нема.
   events: [], // Масив подій, які відбувались у додатку.
-  // pendingTransactions: [], // add 25.07.24 // Закоментована частина для можливого додавання в майбутньому.
+  pendingTransactions: [], // add 25.07.24 // Закоментована частина для можливого додавання в майбутньому.
 };
 
 const loadStateFromLocalStorage = () => {
@@ -80,10 +82,12 @@ const saveStateToLocalStorage = (state) => {
       })
     );
     localStorage.setItem("transactions", JSON.stringify(state.transactions));
+    // localStorage.setItem("transactions", JSON.stringify(transactionsArray));
+
     console.log("State saved to localStorage:", state);
     // Збереження стану в localStorage та виведення стану до консолі для діагностики.
   } catch (error) {
-    console.error("Error saving state to localStorage:", error);
+    console.error("128 Error saving state to localStorage:", error);
     // Виведення помилки до консолі у разі невдачі при збереженні стану.
   }
 };
@@ -99,6 +103,9 @@ export const reducer = (state, action) => {
   switch (action.type) {
     // case "INIT_STATE":
     //   return { ...state, ...action.payload };
+
+    case "SET_USERS":
+      return { ...state, users: action.payload };
 
     case "LOGIN":
       const loginEvent = {
@@ -188,6 +195,42 @@ export const reducer = (state, action) => {
       };
       console.log("Action REMOVE_USER:", action, "New State:", newState);
       break;
+
+    // case "REMOVE_USER":
+    //   // Дія для видалення користувача.
+    //   const removeEvent = {
+    //     title: "Account deletion",
+    //     info: `User deleted ${
+    //       state.user ? state.user.email : ""
+    //     } о ${new Date().toLocaleString()}`,
+    //     time: new Date(),
+    //     user: action.payload.email,
+    //   };
+
+    //   const updatedUsers = state.users.filter(
+    //     (user) => user.email !== action.payload.email
+    //   );
+    //   const newState = {
+    //     ...state,
+    //     users: updatedUsers,
+    //     events: [...state.events, removeEvent],
+    //   };
+
+    //   // Оновлення localStorage ПРЯМО ТУТ
+    //   localStorage.setItem(
+    //     "authState",
+    //     JSON.stringify({
+    //       token: newState.token,
+    //       user: newState.user,
+    //       isLoggedIn: newState.isLoggedIn,
+    //       users: newState.users,
+    //       events: newState.events,
+    //       pendingTransactions: newState.pendingTransactions, // Додано, якщо потрібно
+    //     })
+    //   );
+
+    //   console.log("Action REMOVE_USER:", action, "New State:", newState);
+    //   break;
 
     case "UPDATE_USER_EMAIL":
       // Дія для оновлення електронної пошти користувача.
@@ -346,8 +389,12 @@ export const AuthProvider = ({ children }) => {
     reducer,
     initialState,
     loadStateFromLocalStorage
+    // saveStateToLocalStorage
   );
 
+  // useEffect(() => {
+  //   loadStateFromMongoDB(dispatch);
+  // }, []);
   // Використовуємо хук useReducer для управління станом з ред'юсером та початковим станом,
   // завантажуємо стан з localStorage при ініціалізації.
 

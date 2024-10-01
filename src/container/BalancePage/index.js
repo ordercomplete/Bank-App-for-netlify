@@ -8,10 +8,9 @@ import TitleComponentBalance from "../../component/TitleComponentBalance";
 import FilterSortComponent from "../../component/FilterSortComponent"; // імпортуємо новий компонент
 import "./style.css";
 import { calculateBalance } from "../../component/СalculateBalance";
-import StatusBarColorChanger from "../../modul/StatusBarColorChanger";
+// import StatusBarColorChanger from "../../modul/StatusBarColorChanger";
 import receiveButtonSvg from "../../IconsSvg/receive-button.svg";
 import sendButtonSvg from "../../IconsSvg/send-button.svg";
-import StatusBarColorChanger2 from "../../modul/StatusBarColorChanger2";
 
 export const BalancePage = () => {
   const { user, transactions, updateUserBalance } = useContext(AuthContext);
@@ -29,11 +28,6 @@ export const BalancePage = () => {
 
   return (
     <div className="balance-container jost-font-text">
-      {/* <StatusBarColorChanger color="#4380C5" /> */}
-      {/* <StatusBarColorChanger2
-        color="#4380C5"
-        targetClassName="balance-container"
-      /> */}
       <div className="balance-background-container">
         <TitleComponentBalance />
         <h1 className="balance-amount">
