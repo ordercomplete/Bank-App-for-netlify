@@ -31,9 +31,8 @@ root.render(
       color="#F5F5F7"
       targetClassName="default-container-auth"
     />
-  </App>,
+  </App>
   // </StrictMode>
-  document.getElementById("root")
 );
 
 // У цьому прикладі ми створили масив statusBarConfig, який містить об'єкти з необхідними конфігураціями для StatusBarColorChanger. Потім ми використовуємо метод map(), щоб створити масив компонентів StatusBarColorChanger на основі цього конфігураційного масиву. Це дозволяє нам скоротити код і зробити його більш читабельним.

@@ -11,21 +11,27 @@ const UserNotificationsPage = () => {
   const { user, users, transactions, events } = useContext(AuthContext);
   // const [userEvents, setUserEvents] = useState([]);
 
-  const currentUser = users.find((u) => u.id === userId);
+  // Використовуємо useMemo для кешування об'єкта користувача
+  const currentUser = React.useMemo(() => {
+    return users.find((u) => u.id === userId);
+  }, [userId, users]);
 
-  const userEvents = CombinedEvents({
-    user: currentUser,
-    transactions,
-    events,
-    // isAdmin: user.isAdmin, показує всі події
-  });
+  const userEvents = React.useMemo(() => {
+    if (!currentUser) return [];
+    return CombinedEvents({
+      user: currentUser,
+      transactions,
+      events,
+      // isAdmin: user.isAdmin, показує всі події
+    });
+  }, [currentUser, transactions, events]);
 
   const pageTitle = "Notifications";
 
   return (
     <div className="default-container">
       <TitleComponent pageTitle={pageTitle} />
-      <h5>User: {currentUser.email}</h5>
+      <h2>User: {currentUser.email}</h2>
       <div className="notifications-container">
         {userEvents.length > 0 ? (
           userEvents.map((event, index) => (
@@ -45,7 +51,7 @@ const UserNotificationsPage = () => {
               </div>
               <div className="notification-details">
                 <h3 className="notification-title">{event.title}</h3>
-                <h4 className="notification-info">{event.info}</h4>
+                <p className="notification-info">{event.info}</p>
               </div>
             </div>
           ))

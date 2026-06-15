@@ -17,6 +17,9 @@ export const BalancePage = () => {
   const [filteredAndSortedTransactions, setFilteredAndSortedTransactions] =
     useState([]);
 
+  // Використовуємо PUBLIC_URL для фонового зображення
+  const backgroundImageUrl = `${process.env.PUBLIC_URL || ''}/png/background-2.png`;
+
   useEffect(() => {
     if (user) {
       const newCalculatedBalance = calculateBalance(user.email, transactions);
@@ -26,9 +29,19 @@ export const BalancePage = () => {
     }
   }, [transactions, user, updateUserBalance]);
 
+  // Логування для налагодження
+  useEffect(() => {
+    console.log("BalancePage - Transactions count:", transactions?.length || 0);
+    console.log(
+      "BalancePage - FilteredAndSortedTransactions count:",
+      filteredAndSortedTransactions?.length || 0
+    );
+  }, [transactions, filteredAndSortedTransactions]);
+
   return (
     <div className="balance-container jost-font-text">
       <div className="balance-background-container">
+        <img src={backgroundImageUrl} alt="" fetchpriority="high" className="background-image" />
         <TitleComponentBalance />
         <h1 className="balance-amount">
           {user && typeof user.balance === "number"

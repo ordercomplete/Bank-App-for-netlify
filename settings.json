@@ -1,0 +1,10 @@
+{
+  "cline.llms": [
+    {
+      "name": "Qwen3-Coder-Next",
+      "apiKey": "lm-studio",
+      "baseURL": "http://localhost:1234/v1",
+      "model": "Qwen3-Coder-Next"
+    }
+  ]
+}

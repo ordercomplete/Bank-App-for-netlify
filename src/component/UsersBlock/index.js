@@ -15,7 +15,7 @@ export const UsersBlock = ({ user }) => {
       <h4 className="userslist">
         {isAdmin && (
           <Link to="/users" className="users-icon-link">
-            <img className="icon-enter" src={users_black} alt="icon-enter" />
+            <img className="icon-enter" src={users_black} alt="View all users" />
           </Link>
         )}
       </h4>

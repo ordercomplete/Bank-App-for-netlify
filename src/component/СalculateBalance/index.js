@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 //ми створили універсальну функцію calculateBalance і компонент CalculateBalance, які обчислюють баланс користувача на основі транзакцій. Цей функціонал тепер використовується як у UsersPage.js, так і у BalancePage.js, що значно покращує повторюваність коду та полегшує його читання та підтримку.
 
@@ -19,7 +19,10 @@ const calculateBalance = (userEmail, transactions) => {
 };
 
 const CalculateBalance = ({ userEmail, transactions }) => {
-  const balance = calculateBalance(userEmail, transactions);
+  const balance = useMemo(() => calculateBalance(userEmail, transactions), [
+    userEmail,
+    transactions,
+  ]);
   return <>{balance.toFixed(2)}</>;
 };
 

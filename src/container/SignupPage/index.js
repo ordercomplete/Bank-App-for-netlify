@@ -126,9 +126,9 @@ export const SignupPage = () => {
           />
         </div>
         <div className="button-container">
-          <h5>
+          <p>
             Already have an account? <Link to="/signin">Sign In</Link>
-          </h5>
+          </p>
           <button type="submit" className="continue-button">
             Continue
           </button>

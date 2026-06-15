@@ -114,10 +114,10 @@ export const SigninPage = () => {
         <div className="button-container">
           {" "}
           {/* Блок для кнопок. */}
-          <h5>
+          <p>
             Forgot your password? <Link to="/recovery">Restore</Link>{" "}
             {/* Посилання на сторінку відновлення пароля. */}
-          </h5>
+          </p>
           <button type="submit" className="continue-button">
             Continue {/* Кнопка для продовження (входу). */}
           </button>

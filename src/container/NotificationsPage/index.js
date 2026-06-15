@@ -42,7 +42,7 @@ export const NotificationsPage = () => {
               </div>
               <div className="notification-details">
                 <h3 className="notification-title">{event.title}</h3>
-                <h4 className="notification-info">{event.info}</h4>
+                <p className="notification-info">{event.info}</p>
               </div>
             </div>
           ))

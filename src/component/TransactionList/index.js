@@ -7,7 +7,7 @@ import transSend from "../../IconsSvg/transSend.svg";
 import transReceive from "../../IconsSvg/transReceive.svg";
 import "./style.css";
 
-const TransactionList = ({ transactions: propTransactions }) => {
+const TransactionList = ({ transactions: propTransactions, totalTransactionsCount, hasNoMatchingFilter }) => {
   const { user } = useContext(AuthContext);
   const [transactions, setTransactions] = useState([]);
   const [filter, setFilter] = useState("time"); // Новий стан для фільтра
@@ -78,7 +78,7 @@ const TransactionList = ({ transactions: propTransactions }) => {
                           ? transSend
                           : transReceive
                       }
-                      alt="transaction-logo"
+                      alt={`${transaction.type} transaction - ${transaction.isPending ? 'Unconfirmed' : 'Completed'} - $${transaction.amount.toFixed(2)}`}
                     />
                   </div>
                   <div className="transaction-details">
@@ -119,26 +119,35 @@ const TransactionList = ({ transactions: propTransactions }) => {
           ))
         ) : (
           <div className="text-no-transactions">
-            <h3 className="text-no-transactions--title">
-              Welcome to our cryptocurrency bank!
-            </h3>
-            <br />
-            <h6 className="text-no-transactions--text">
-              We are pleased to welcome you to the world of secure and
-              innovative financial solutions. Although your balance currently
-              shows no transactions, we look forward to helping you take full
-              advantage of our services.
-            </h6>
-            <br />
-            <h5>Our bank offers:</h5>
-            <br />
-            <h6 className="text-no-transactions--text">
-              High level of security for your cryptocurrency Convenient and fast
-              transactions Support for popular cryptocurrencies and fiat
-              currencies Expert advice and 24/7 customer support Start your
-              financial transactions with us today and discover new
-              opportunities for yourself!
-            </h6>
+            {hasNoMatchingFilter ? (
+              <p className="no-matching-filter-message">Such transactions are absent</p>
+            ) : (
+              <>
+                <h3 className="text-no-transactions--title">
+                  Welcome to our cryptocurrency bank!
+                </h3>
+                <br />
+                <p className="text-no-transactions--text">
+                  We are pleased to welcome you to the world of secure and
+                  innovative financial solutions. Although your balance currently
+                  shows no transactions, we look forward to helping you take full
+                  advantage of our services.
+                </p>
+                <br />
+                <h4>Our bank offers:</h4>
+                <br />
+                <ul className="text-no-transactions--list">
+                  <li>High level of security for your cryptocurrency</li>
+                  <li>Convenient and fast transactions</li>
+                  <li>Support for popular cryptocurrencies and fiat currencies</li>
+                  <li>Expert advice and 24/7 customer support</li>
+                </ul>
+                <p className="text-no-transactions--text">
+                  Start your financial transactions with us today and discover new
+                  opportunities for yourself!
+                </p>
+              </>
+            )}
           </div>
         )}
       </div>

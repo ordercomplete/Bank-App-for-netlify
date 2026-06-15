@@ -1,0 +1,40 @@
+# Netlify Headers Configuration
+# https://docs.netlify.com/routing/headers/
+
+/* 
+  Cache-Control for static resources
+  Set long cache time for optimized assets (hash in filename)
+  Set shorter cache time for other assets
+*/
+
+/* 24 hours for most static assets */
+static/*
+  Cache-Control: public, max-age=86400, immutable
+
+/* Images - 7 days */
+png/*
+  Cache-Control: public, max-age=604800, immutable
+jpg/*
+  Cache-Control: public, max-age=604800, immutable
+jpeg/*
+  Cache-Control: public, max-age=604800, immutable
+gif/*
+  Cache-Control: public, max-age=604800, immutable
+webp/*
+  Cache-Control: public, max-age=604800, immutable
+svg/*
+  Cache-Control: public, max-age=604800, immutable
+
+/* Fonts - 30 days */
+ttf/*
+  Cache-Control: public, max-age=2592000, immutable
+woff/*
+  Cache-Control: public, max-age=2592000, immutable
+woff2/*
+  Cache-Control: public, max-age=2592000, immutable
+
+/* CSS and JS - 1 week (hash in filename makes them immutable) */
+css/*
+  Cache-Control: public, max-age=604800, immutable
+js/*
+  Cache-Control: public, max-age=604800, immutable
